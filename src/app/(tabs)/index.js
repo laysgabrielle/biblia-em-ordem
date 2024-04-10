@@ -1,14 +1,16 @@
-import { Pressable, Text, View } from "react-native"
-import {db} from "../../../firebase/firebaseConfig";
-import { doc, setDoc, getDoc} from "firebase/firestore";
+import { Pressable, Text, TouchableHighlight, View } from "react-native"
+import CardDefault from "../../components/card-default"
 
 export default function Home() {
      return (
 
 <View className="flex-1 items-center justify-center">
-            <Text>TELA FEED 2</Text>
-            <Pressable onPress={AdicionarAluno} ><Text>SALVAR</Text></Pressable>
-            <Pressable onPress={AdicionarAlunoNested} ><Text>nested</Text></Pressable>
+
+
+            <CardDefault icone="book" title="Titulo" />
+
+
+
         </View>
 
 
