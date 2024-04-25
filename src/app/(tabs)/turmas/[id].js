@@ -4,6 +4,32 @@ import { useLocalSearchParams } from "expo-router";
 import { ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
+import db from "../../../../firebase/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore"; 
+
+const querySnapshot = async () =>{
+    const snapshot = await getDocs(collection(db, "/turmas/turmaAbraao/alunos"));
+    const data = [];
+    snapshot.forEach((doc) => {
+        data.push(doc.data());
+    });
+    console.log("Este é log de data: ", data );
+    console.log(data.nome);
+    console.log(data[1].nome);
+    console.log(data[1].dataNascimento.toString());
+    
+
+
+    return data;
+}
+
+querySnapshot();
+console.log("O length do query é: ", querySnapshot.);
+
+
+
+
+
 const alunos = [
     { id: 1, nome: "João", dataNascimento: "1995-03-15" },
     { id: 2, nome: "Maria", dataNascimento: "1996-07-20" },
@@ -112,9 +138,7 @@ export default function id()
             <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toLocaleUpperCase()}</Text>
             <ScrollView style={{marginBottom: 250,}}>
             {
-                Object.values(alunos).map((aluno, id) => (
-                    <AlunoChamada key={id} nomeAluno={aluno.nome}/>
-                 ))
+                querySnapshot.length > 0 ? <Text>Algum aluno encontrado</Text> : <Text>Nenhum aluno encontrado</Text>
             }
             </ScrollView>
         </View>
