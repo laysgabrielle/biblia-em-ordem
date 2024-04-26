@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import AlunoChamada from "../../../components/aluno-chamada";
 import { View, Text, Pressable } from "react-native";
 import { useLocalSearchParams } from "expo-router";
@@ -5,29 +7,7 @@ import { ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import db from "../../../../firebase/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore"; 
-
-const querySnapshot = async () =>{
-    const snapshot = await getDocs(collection(db, "/turmas/turmaAbraao/alunos"));
-    const data = [];
-    snapshot.forEach((doc) => {
-        data.push(doc.data());
-    });
-    console.log("Este é log de data: ", data );
-    console.log(data.nome);
-    console.log(data[1].nome);
-    console.log(data[1].dataNascimento.toString());
-    
-
-
-    return data;
-}
-
-querySnapshot();
-console.log("O length do query é: ", querySnapshot.);
-
-
-
+import { collection, getDocs, query, where, doc } from "firebase/firestore"; 
 
 
 const alunos = [
@@ -52,7 +32,7 @@ const alunos = [
     { id: 19, nome: "Bruno", dataNascimento: "2003-08-16" },
     { id: 20, nome: "Isabela", dataNascimento: "2004-11-29" }
 ];
-
+//#region Funções de apoio para o mês atual e os domingos
 const MesAtual = EncontraMesAtual();
 
 function EncontraMesAtual() {  
@@ -107,12 +87,37 @@ function EncontraDomingos() {
 
     return arrayDomingos;
 }
-
+//#endregion
 
 
 export default function id()
 {
     const local = useLocalSearchParams();
+    const [dados, setDados] = useState([]);
+    const turmaSamuelDocRef = doc(db, "turmas", "turmaSamuel");
+    const q = query(collection(db, "alunos"), where("turma_associada", "==", turmaSamuelDocRef));
+    
+    useEffect(() => {
+        const fetchDataAlunos = async () => {
+            try {
+                const querySnapshot = await getDocs(q);
+                const dataVz = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setDados(dataVz);
+            }            
+            catch(e) {
+                console.log(e);
+            }
+        };
+
+        fetchDataAlunos();
+    }, []);
+
+
+
+
+
+
+
 
     return(
         <View>
@@ -136,9 +141,11 @@ export default function id()
         </View>
         <View className="justify-center items-center ">
             <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toLocaleUpperCase()}</Text>
-            <ScrollView style={{marginBottom: 250,}}>
+            <ScrollView>
             {
-                querySnapshot.length > 0 ? <Text>Algum aluno encontrado</Text> : <Text>Nenhum aluno encontrado</Text>
+                dados.map(dado => (
+                    <AlunoChamada nomeAluno={dado.nome} key={dado.id} />
+                ))
             }
             </ScrollView>
         </View>
