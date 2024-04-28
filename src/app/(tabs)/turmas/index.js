@@ -26,8 +26,7 @@ export default function Turmas(){
      }
     }
     getTurmas();  
-
-// BUG CONHECIDO: Turmas duplicando
+    //console.log(nomesTurmas);
 
     return (
         <View className="mx-4 mt-20">

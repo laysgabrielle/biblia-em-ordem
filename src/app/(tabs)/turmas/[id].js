@@ -7,7 +7,7 @@ import { ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import db from "../../../../firebase/firebaseConfig";
-import { collection, getDocs, query, where, doc } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, updateDoc, arrayUnion } from "firebase/firestore";
 
 //#region Funções de apoio para o mês atual e os domingos
 const MesAtual = EncontraMesAtual();
@@ -43,8 +43,10 @@ function EncontraMesAtual() {
     }
 }
 
-const Hoje = new Date().getDate;
+const Hoje = new Date().getDate();
 const Domingos = EncontraDomingos();
+
+
 
 function daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
@@ -100,6 +102,35 @@ export default function id() {
     }, []);
     //#endregion
 
+    const [estaMarcado, setEstaMarcado] = useState(false);
+    const faltasDoDia = [];
+    /**
+     * Adiciona os alunos marcados para o array de faltas do dia.
+     * @param {*} id 
+     */
+    const handleCheckbox = (id) => {
+        if(!faltasDoDia.includes(id)){
+            faltasDoDia.push(id);
+            console.log(faltasDoDia);    
+        } else {
+            //Remove o id do aluno do array de faltas
+            faltasDoDia.splice(faltasDoDia.indexOf(id), 1);
+            console.log(faltasDoDia);
+        }
+    }
+    /**
+     * Função que seta as faltas no banco de dados.
+     */
+    //TODO: Evitar registros duplicados.
+    const setarFaltas = () => {
+        console.log("Setar faltas pressed");
+        faltasDoDia.forEach(async element => {
+            const alunoDocRef = doc(db, "alunos", element);
+            await updateDoc(alunoDocRef, { faltas: arrayUnion(new Date()) })
+    })
+}
+
+
     return (
         <View>
             {/* TODO: Refatorar como componente */}
@@ -109,11 +140,11 @@ export default function id() {
                     {Domingos.map((domingo, index) => (
                         <Pressable key={index} className="min-w-10 min-h-10 my-3 mx-2 rounded-full justify-center items-center bg-orange-base"
                             style={{
-                                backgroundColor: Domingos.includes(Hoje) ? "orange" : "white",
+                                backgroundColor: domingo == Hoje ? "orange" : "white",
                                 borderColor: "orange", borderWidth: 2, borderStyle: "solid",
                             }}>
                             <Text className=" color-white"
-                                style={{ color: Domingos.includes(Hoje) ? "white" : "black", }}>
+                                style={{ color: domingo == Hoje ? "white" : "black", }}>
                                 {domingo}
                             </Text>
                         </Pressable>
@@ -121,11 +152,16 @@ export default function id() {
                 </View>
             </View>
             <View className="justify-center items-center ">
-                <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toLocaleUpperCase()}</Text>
+                <View className="flex-row justify-between items-baseline">
+                    <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toLocaleUpperCase()}</Text>
+                    <Pressable onPress={setarFaltas} className="pl-6">
+                        <Text>AQUI</Text>
+                    </Pressable>
+                </View>
                 <ScrollView>
                     {
                         dados.map(dado => (
-                            <AlunoChamada nomeAluno={dado.nome} key={dado.id} />
+                            <AlunoChamada nomeAluno={dado.nome} key={dado.id} estaMarcado={estaMarcado} onPress={() => handleCheckbox(dado.id)} />
                         ))
                     }
                 </ScrollView>
