@@ -1,6 +1,6 @@
 import "../../../styles/global.css";
 import { Text, TextInput, View } from "react-native";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import CardTurma from "../../../components/card-turma";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
@@ -9,23 +9,28 @@ import { collection, getDocs, query } from "firebase/firestore";
 
 export default function Turmas(){
     const [nomesTurmas, setNomesTurmas] = useState([]);
-    /**
-     * Função que busca as turmas no banco de dados, é usado pra concatenar os nomes das turmas
-     * nas rotas pra obter os alunos por turmas.
-     */
-    const getTurmas = async () => {
-        try{
-            const turmas = collection(db, "turmas");
-            const q = query(turmas);
-            const querySnapshot = await getDocs(q);
-            let arrayHelperTurmas = [];
-            querySnapshot.forEach((doc) => {arrayHelperTurmas.push(doc.data().nome);});
-            setNomesTurmas(arrayHelperTurmas);
-     } catch (e) {
-            console.log(e);
-     }
+    useEffect(() => {
+        /**
+         * Função que busca as turmas no banco de dados, é usado pra concatenar os nomes das turmas
+         * nas rotas pra obter os alunos por turmas.
+         */
+        const getTurmas = async () => {
+            try{
+                console.log("Entrou na função getTurmas");
+                const turmas = collection(db, "turmas");
+                const q = query(turmas);
+                const querySnapshot = await getDocs(q);
+                let arrayHelperTurmas = [];
+                querySnapshot.forEach((doc) => {arrayHelperTurmas.push(doc.data().nome);
+                console.log("doc" + doc)});
+                setNomesTurmas(arrayHelperTurmas);
+                console.log("Nomes das turmas: " + arrayHelperTurmas);
+        } catch (e) {
+                console.log(e);
+        }
     }
-    getTurmas();  
+    getTurmas();
+}, []);  
     //console.log(nomesTurmas);
 
     return (

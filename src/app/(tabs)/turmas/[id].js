@@ -77,13 +77,14 @@ export default function id() {
     /**
      * Concatena o nome da turma com a string "turma" para obter a referência da turma no BD.
     */
-    const turmaDocRef = doc(db, "turmas", "turma"+nomeTurma);
-    /**
-     * Busca conforme a referência de turma passada.
-     */
-    const q = query(collection(db, "alunos"), where("turma_associada", "==", turmaDocRef));
-
-    useEffect(() => {
+   useEffect(() => {
+        const turmaDocRef = doc(db, "turmas", "turma"+nomeTurma);
+        console.log("Isso consulta " + turmaDocRef);
+        /**
+         * Busca conforme a referência de turma passada.
+         */
+        const q = query(collection(db, "alunos"), where("turma_associada", "==", turmaDocRef));
+        console.log("Isso consulta " + q);
         /**
          * Mapeia os alunos no array 'dados'.
          */
@@ -92,6 +93,7 @@ export default function id() {
                 const querySnapshot = await getDocs(q);
                 const dataVz = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setDados(dataVz);
+                console.log("Logando " + dataVz);
             }
             catch (e) {
                 console.log(e);
