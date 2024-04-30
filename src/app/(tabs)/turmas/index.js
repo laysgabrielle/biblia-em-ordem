@@ -1,5 +1,5 @@
 import "../../../styles/global.css";
-import { Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 import React, {useState, useEffect} from "react";
 import CardTurma from "../../../components/card-turma";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -9,28 +9,35 @@ import { collection, getDocs, query } from "firebase/firestore";
 
 export default function Turmas(){
     const [nomesTurmas, setNomesTurmas] = useState([]);
-    useEffect(() => {
-        /**
-         * Função que busca as turmas no banco de dados, é usado pra concatenar os nomes das turmas
-         * nas rotas pra obter os alunos por turmas.
-         */
-        const getTurmas = async () => {
-            try{
-                console.log("Entrou na função getTurmas");
-                const turmas = collection(db, "turmas");
-                const q = query(turmas);
-                const querySnapshot = await getDocs(q);
-                let arrayHelperTurmas = [];
-                querySnapshot.forEach((doc) => {arrayHelperTurmas.push(doc.data().nome);
-                console.log("doc" + doc)});
-                setNomesTurmas(arrayHelperTurmas);
-                console.log("Nomes das turmas: " + arrayHelperTurmas);
-        } catch (e) {
-                console.log(e);
+    const [achouTurmas, setAchouTurmas] = useState(false);
+
+    const getTurmas = async () => {
+        try{
+            console.log("Entrou na função getTurmas");
+            const turmas = collection(db, "turmas");
+            const q = query(turmas);
+            const querySnapshot = await getDocs(q);
+            let arrayHelperTurmas = [];
+            querySnapshot.forEach((doc) => {arrayHelperTurmas.push(doc.data().nome);
+            console.log("doc" + doc)});
+            setNomesTurmas(arrayHelperTurmas);
+            console.log("Nomes das turmas: " + arrayHelperTurmas);
+    } catch (e) {
+            console.log(e);
+    } finally {
+        if(!nomesTurmas.length === 0){
+            setAchouTurmas(false);
+        } else {
+            setAchouTurmas(true);
         }
+            
     }
-    getTurmas();
-}, []);  
+
+    }
+    useEffect(() => {
+        getTurmas();
+    }, []);
+
     //console.log(nomesTurmas);
 
     return (
@@ -38,7 +45,7 @@ export default function Turmas(){
              <View className="mx-7 mt-16 mb-1 ">
                 <TextInput className="bg-blue-accent rounded-xl color-white p-3" placeholder="Search"/>           
                 </View> 
-            <View className="flex-wrap flex-row justify-evenly items-center">   
+           { achouTurmas ? <View className="flex-wrap flex-row justify-evenly items-center">   
               {Object.values(nomesTurmas).map((nomeTurma, index) => (
                 <Link className="m-3" key={index} href={{
                     pathname: "/turmas/[id]",
@@ -46,8 +53,18 @@ export default function Turmas(){
                   }} onPress={() => { console.log(nomeTurma) }} options={{headerShown: false,}}>
                     <CardTurma nomeTurma={nomeTurma}/>
                 </Link>
-            ))}
+            ))} 
+            </View> :
+            <View>
+                <Text className="text-center p-6">Nenhuma turma encontrada.</Text>
+                <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={getTurmas}>
+                    <MaterialIcons name="refresh" size={48} color="white" />
+                    <Text className="color-white">Recarregar</Text>
+                
+                
+                </Pressable>
             </View>
+            }
         </View>
     )
 }
