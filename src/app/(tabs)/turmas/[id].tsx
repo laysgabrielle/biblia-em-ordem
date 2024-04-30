@@ -48,7 +48,7 @@ const Domingos = EncontraDomingos();
 
 
 
-function daysInMonth(month, year) {
+function daysInMonth(month: number, year: number) {
     return new Date(year, month, 0).getDate();
 }
 
@@ -73,7 +73,7 @@ export default function id() {
     const local = useLocalSearchParams();
     //#region Chamada de alunos no firebase
     const nomeTurma = local.id; //Nome passado como parametro na rota
-    const [dados, setDados] = useState([]);
+    const [dados, setDados] = useState<any[]>([]);
     /**
      * Concatena o nome da turma com a string "turma" para obter a referência da turma no BD.
     */
@@ -105,12 +105,12 @@ export default function id() {
     //#endregion
 
     const [estaMarcado, setEstaMarcado] = useState(false);
-    const faltasDoDia = [];
+    const faltasDoDia: Array<Object> = [];
     /**
      * Adiciona os alunos marcados para o array de faltas do dia.
      * @param {*} id 
      */
-    const handleCheckbox = (id) => {
+    const handleCheckbox = (id: string) => {
         if(!faltasDoDia.includes(id)){
             faltasDoDia.push(id);
             console.log(faltasDoDia);    
@@ -127,7 +127,7 @@ export default function id() {
     const setarFaltas = () => {
         console.log("Setar faltas pressed");
         faltasDoDia.forEach(async element => {
-            const alunoDocRef = doc(db, "alunos", element);
+            const alunoDocRef = doc(db, "alunos", element.toString());
             await updateDoc(alunoDocRef, { faltas: arrayUnion(new Date()) })
     })
 }
@@ -155,7 +155,7 @@ export default function id() {
             </View>
             <View className="justify-center items-center ">
                 <View className="flex-row justify-between items-baseline">
-                    <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toLocaleUpperCase()}</Text>
+                    <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toString().toLocaleUpperCase()}</Text>
                     <Pressable onPress={setarFaltas} className="pl-6">
                         <Text>AQUI</Text>
                     </Pressable>

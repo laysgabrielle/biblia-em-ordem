@@ -2,8 +2,16 @@ import { View, Text, Pressable, TouchableHighlight } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import {useState} from "react";
 
+type props = {
+    nomeTurma: string;
+    icone?: string;
+    qtdAlunos?: number;
 
-export default function CardTurma(props){
+}
+
+
+
+export default function CardTurma(props: props){
         const [temPermissao, setPermissao] = useState(false);
 
         return(<View className="justify-center items-center bg-blue-accent w-44 h-64 my-6 rounded-xl shadow-blue-dark shadow-lg "> 
