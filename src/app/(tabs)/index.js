@@ -7,7 +7,7 @@ export default function Home() {
 
      <View className="flex-1 items-center justify-center">
 
-          <View className="flex-1 items-top justify-top">
+          <View className="flex-1 items-center justify-center">
 
                <CardFeed title="Título da Revista" subtitle="Título da Lição"/>
 
@@ -18,7 +18,7 @@ export default function Home() {
                <CardDefault icone="book" title="Titulo" />
 
           </View>
-          
+
      </View>
 
 
