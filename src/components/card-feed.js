@@ -5,13 +5,19 @@ function CardFeed(props) {
     return (
         <View
         style={{
-            width: 385,
+            width: 400,
             height: 160,
             backgroundColor: "#152E45",
             flexDirection: "column", 
             alignItems: "flex-start", 
-            padding: 12, 
-        }}>          
+            padding: 14,
+        }}>
+            {/* <Image
+                source={require("../../assets/images/feed.jpg")}
+                style={{
+                    resizeMode:'contain'
+                }}
+            />           */}
             <View style={{ width: 167 }}>
                 <Text style={{ color: "white", fontSize: 22 }}>
                     {props.title}
