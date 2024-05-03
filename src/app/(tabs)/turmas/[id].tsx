@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 
 import AlunoChamada from "../../../components/aluno-chamada";
 import { View, Text, Pressable } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, Link, Href } from "expo-router";
 import { ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Portal, Modal, PaperProvider } from "react-native-paper";
 
 import db from "../../../../firebase/firebaseConfig";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import MAdicionarAluno from "../../../components/m-adicionar-aluno";
 
 //#region Funções de apoio para o mês atual e os domingos
 const MesAtual = EncontraMesAtual();
@@ -132,9 +134,22 @@ export default function id() {
     })
 }
 
-
+    const [modalVisible, setModalVisible] = useState(false);
     return (
+        <PaperProvider>
         <View>
+<Portal>
+        <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)}>
+            <View className="justify-center items-center">
+                <MAdicionarAluno />
+            </View>
+   
+        </Modal>
+      </Portal>
+
+
+
+
             {/* TODO: Refatorar como componente */}
             <View className="justify-center items-center bg-blue-accent m-12 mb-0 rounded-lg ">
                 <Text className="color-white pt-3 p-0 mb-3">{MesAtual.toUpperCase()}</Text>
@@ -156,8 +171,8 @@ export default function id() {
             <View className="justify-center items-center ">
                 <View className="flex-row justify-between items-baseline">
                     <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toString().toLocaleUpperCase()}</Text>
-                    <Pressable onPress={setarFaltas} className="pl-6">
-                        <Text>AQUI</Text>
+                    <Pressable onPress={() => setModalVisible(true)} className="pl-6">
+                        <Text>Pressione</Text>
                     </Pressable>
                 </View>
                 <ScrollView>
@@ -169,5 +184,6 @@ export default function id() {
                 </ScrollView>
             </View>
         </View>
+        </PaperProvider>
     )
 }

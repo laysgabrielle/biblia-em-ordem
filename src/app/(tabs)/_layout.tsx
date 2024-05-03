@@ -57,7 +57,7 @@ export default function TabLayout(){
                         backgroundColor: route === 'formulario' ? '#FFFFFF' : '#FFFFFF00',
                     }}/>}}/>
 
-            <Tabs.Screen listeners={{
+            {/* <Tabs.Screen listeners={{
                 tabPress: (e) => {setRoute('relatorio');},
             }} 
                 name="relatorio" 
@@ -66,7 +66,7 @@ export default function TabLayout(){
                     style= {{
                         borderRadius: 200,
                         backgroundColor: route === 'relatorio' ? '#FFFFFF' : '#FFFFFF00',
-                    }}/>}}/>
+                    }}/>}}/> */}
         </Tabs>
     )
 }
