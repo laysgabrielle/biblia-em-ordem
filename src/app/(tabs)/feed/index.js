@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Dimensions } from "react-native";
-import CardFeed from "../../components/card-feed";
-import CardEvento from "../../components/card-evento";
+import CardFeed from "../../../components/card-feed";
+import CardEvento from "../../../components/card-evento";
 
 const windowHeight = Dimensions.get('window').height;
 

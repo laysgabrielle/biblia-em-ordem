@@ -26,7 +26,7 @@ export default function TabLayout(){
             <Tabs.Screen listeners={{
                 tabPress: (e) => {setRoute('feed');},
             }} 
-                name="index" 
+                name="feed" 
                 options={{
                     tabBarIcon: () => <MaterialIcons name="list" size={30} color="#152E45"
                     style= {{
