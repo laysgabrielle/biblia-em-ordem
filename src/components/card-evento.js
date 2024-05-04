@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, Image } from "react-native";
 
 function CardEvento(props) {
     const [showDetails, setShowDetails] = useState(false);
@@ -26,12 +26,16 @@ function CardEvento(props) {
                     elevation: 5,
                 }}
             >
+                <Image
+                    source={require("../../assets/images/feed.jpg")} // Caminho da imagem
+                    style={{
+                        width: "100%",
+                        height: showDetails ? 140 : 100, // Altura da imagem conforme o estado
+                        resizeMode: "cover",
+                    }}
+                />
                 <View
                     style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "flex-end",
                         padding: 12,
                     }}
                 >
@@ -41,14 +45,12 @@ function CardEvento(props) {
                     <Text style={{ color: "black", fontSize: 10 }}>
                         {props.location}
                     </Text>
-                </View>
-                {showDetails && (
-                    <View style={{ padding: 12 }}>
+                    {showDetails && (
                         <Text style={{ color: "black" }}>
-                        {props.info}
+                            {props.info}
                         </Text>
-                    </View>
-                )}
+                    )}
+                </View>
             </View>
         </TouchableOpacity>
     );
