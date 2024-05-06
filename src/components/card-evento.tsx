@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Text, View, TouchableOpacity, Image } from "react-native";
 
-function CardEvento(props) {
+type props = {
+    title: string,
+    location: string,
+    info: string,
+}
+
+function CardEvento(props: props) {
     const [showDetails, setShowDetails] = useState(false);
 
     return (
