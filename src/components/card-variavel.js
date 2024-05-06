@@ -3,16 +3,8 @@ import { Pressable, Text, TouchableHighlight, TouchableOpacity, View } from "rea
 import { MaterialIcons } from "@expo/vector-icons";
 
 
-type props = { 
-    title: string;
-    icone: {
-        style: string;
-    };
-}
 
-
-
-function CardVariavel(props: props) {
+function CardVariavel(props) {
     const [tamanhoY, setTamanhoY] = useState(140);
     const [tamanhoX, setTamanhoX] = useState(330);
     const [corDaSombra, setcorDaSombra] = useState("black");
@@ -68,7 +60,7 @@ function CardVariavel(props: props) {
                     </View>
 
                     <View className="border-2 border-white p-2">
-                        <Pressable pressRetentionOffset={45}
+                        <Pressable pressRetentionOffset="45"
                         onPress={() => console.log("MENOR")}>
                                 <Text className="color-white"> + </Text>
                             </Pressable>
