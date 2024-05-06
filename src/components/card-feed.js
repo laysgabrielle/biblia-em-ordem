@@ -1,13 +1,7 @@
 import React from "react";
 import { Text, View, Image, StyleSheet } from "react-native";
 
-type props = {
-    title: string,
-    subtitle: string,
-}
-
-
-function CardFeed(props: props) {
+function CardFeed(props) {
     return (
         <View style={styles.container}>
             <Image
