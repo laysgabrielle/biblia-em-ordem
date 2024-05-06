@@ -1,14 +1,7 @@
 import { Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
-type props = {
-
-    title: string;
-    icone: string;
-}
-
-
-function CardDefault(props: props) {
+function CardDefault(props) {
     return (
         <View className="flex-row rounded-md items-center p-6 justify-between m-2 shadow-xl shadow-black"
         style={
