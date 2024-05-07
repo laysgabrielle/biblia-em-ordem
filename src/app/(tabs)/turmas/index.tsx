@@ -1,17 +1,25 @@
 import "../../../styles/global.css";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 import React, {useState, useEffect} from "react";
 import CardTurma from "../../../components/card-turma";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Href, Link } from "expo-router";
 import db from "../../../../firebase/firebaseConfig";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, deleteDoc, getDocs, query, doc, setDoc } from "firebase/firestore";
+import { FloatingAction } from "react-native-floating-action";
+import { Modal, PaperProvider, Portal } from "react-native-paper";
+import MAdicionarTurma from "../../../components/m-adicionar-turma";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 export default function Turmas(){
     const [nomesTurmas, setNomesTurmas] = useState<string[]>([]);
-    const [achouTurmas, setAchouTurmas] = useState(false);
+    const [achouTurmas, setAchouTurmas] = useState(true);
+    const [modalAdicionarVisible, setModalAdicionarVisible] = useState(false);
+    const [modalDeletarVisible, setModalDeletarVisible] = useState(false);
+    const [modalEditarVisible, setModalEditarVisible] = useState(false);
 
-    const getTurmas = async () => {
+
+    const getTurmas = async () => {        
         try{
             console.log("Entrou na função getTurmas");
             const turmas = collection(db, "turmas");
@@ -21,6 +29,7 @@ export default function Turmas(){
             querySnapshot.forEach((doc) => {arrayHelperTurmas.push(doc.data().nome);
             console.log("doc" + doc)});
             setNomesTurmas(arrayHelperTurmas);
+            setAchouTurmas(arrayHelperTurmas.length > 0);
             console.log("Nomes das turmas: " + arrayHelperTurmas);
     } catch (e) {
             console.log(e);
@@ -38,10 +47,56 @@ export default function Turmas(){
         getTurmas();
     }, []);
 
+    const refresh = () => {
+        if(nomesTurmas.length == 0)
+            getTurmas();
+        else
+            setAchouTurmas(true);
+        
+    }
     //console.log(nomesTurmas);
 
+    const actions = [
+        {
+            text: "Adicionar Turma",
+            icon: <MaterialIcons name="person-add" size={24} color="white" />,
+            name: "bt_add_turma",
+            position: 1,
+            color: "#F7900B",
+        },
+        {
+            text: "Deletar Turma",
+            icon: <MaterialIcons name="delete-outline" size={24} color="white" />,
+            name: "bt_deleta_turma",
+            position: 2,
+            color: "#F7900B",
+        },        {
+            text: "Editar Turma",
+            icon: <MaterialIcons name="edit" size={24} color="white" />,
+            name: "bt_edita_turma",
+            position: 3,
+            color: "#F7900B",
+        },
+    ];
+
+    const deleteTurma = async (nomeTurma: string) => {
+        console.log("Deletando turma " + nomeTurma);
+        const turmaDocRef = doc(db, "turmas", "turma"+nomeTurma);
+        await deleteDoc(turmaDocRef);
+        console.log("Turma deletada com sucesso");
+    }
+
+    const createTurma = async (nomeTurma: string) => {
+        console.log("Criando turma " + nomeTurma);
+        await setDoc(doc(db, "turmas", "turma"+nomeTurma), {
+            nome: nomeTurma,        
+        });
+        console.log("Turma criada com sucesso");
+    }
+
     return (
-        <View className="mx-4 mt-20">
+        <PaperProvider>
+        <View className="flex-1 mx-4 mt-20">
              <View className="mx-7 mt-16 mb-1 ">
                 <TextInput className="bg-blue-accent rounded-xl color-white p-3" placeholder="Search"/>           
                 </View> 
@@ -53,13 +108,13 @@ export default function Turmas(){
                   }} onPress={() => { console.log(nomeTurma) }} 
                 //   options={{headerShown: false,}}
                   >
-                    <CardTurma nomeTurma={nomeTurma} icone="book"/>
+                    <CardTurma deletar={() => console.log("qa")} temPermissao={true} nomeTurma={nomeTurma} icone="book"/>
                 </Link>
             ))} 
             </View> :
             <View>
                 <Text className="text-center p-6">Nenhuma turma encontrada.</Text>
-                <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={getTurmas}>
+                <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={refresh}>
                     <MaterialIcons name="refresh" size={48} color="white" />
                     <Text className="color-white">Recarregar</Text>
                 
@@ -67,6 +122,48 @@ export default function Turmas(){
                 </Pressable>
             </View>
             }
+                                <Portal>
+                        <Modal visible={modalDeletarVisible} onDismiss={() => setModalDeletarVisible(false)}>
+                            <View className="bg-blue-dark bg-opacity-95 rounded-xl p-2 shadow-lg m-16 shadow-black drop-shadow-md justify-center items-center" style={{width: 285}}>
+                                <Text className="color-white">Qual turma deseja deletar?</Text>
+                                <FlatList 
+                                data={nomesTurmas} 
+                                renderItem={({item}) =>
+                                <View className="flex-row justify-between"> 
+                                    <Text className="color-white p-3" >{item}</Text>
+                                    <BouncyCheckbox isChecked={false} onPress={() => console.log("a")} /> 
+                                    </View>
+                                }>
+                                </FlatList>
+                                <View className="flex-row justify-center items-center">
+                                    <Pressable className="p-3 m-3" onPress={() => deleteTurma("")}>
+                                        <MaterialIcons name="check" size={24} color="white"/>
+                                    </Pressable>
+                                    <Pressable className="p-3 m-3" onPress={() => setModalDeletarVisible(false)}>
+                                        <MaterialIcons name="close" size={24} color="white"/>
+                                    </Pressable>
+                                    </View>
+                            </View>
+                        </Modal>
+                    </Portal>
+            <Portal>
+                <Modal visible={modalAdicionarVisible} onDismiss={() => setModalAdicionarVisible(false)}>
+                    <MAdicionarTurma/>
+                </Modal>
+            </Portal>
         </View>
+            <View style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0,
+            }}>
+                <FloatingAction actions={actions} onPressItem={name => 
+                    {if(name == "btn_add_turma"){setModalAdicionarVisible(true)} 
+                    else if(name == "bt_deleta_turma"){setModalDeletarVisible(true)} }
+                    } color="#152E45" distanceToEdge={{vertical: 30, horizontal:30}}/>
+            </View>
+        </PaperProvider>
     )
 }

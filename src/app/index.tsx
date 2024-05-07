@@ -1,5 +1,7 @@
 import { Text, View } from "react-native";
 import { Link } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
+import { FloatingAction } from "react-native-floating-action";
 
 
 export default function Home(){
@@ -8,6 +10,8 @@ export default function Home(){
             <Link href={"feed/"}>
                 <Text>Avançar</Text>
             </Link>
+
+
         </View>
     )
 }

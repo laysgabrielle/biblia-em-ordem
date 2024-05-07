@@ -5,6 +5,7 @@ import { View, Text, Pressable } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { FloatingAction } from "react-native-floating-action";
 
 import db from "../../../../firebase/firebaseConfig";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion } from "firebase/firestore";
@@ -68,6 +69,31 @@ function EncontraDomingos() {
 }
 //#endregion
 
+//#region Funções de apoio para a chamada de alunos
+const actions = [
+    {
+        text: "Adicionar Aluno",
+        icon: <MaterialIcons name="person-add" size={24} color="white" />,
+        name: "bt_add_aluno",
+        position: 2,
+        color: "#F7900B",
+    },
+    {
+        text: "Salvar frequência",
+        icon: <MaterialIcons name="save" size={24} color="white" />,
+        name: "bt_salvar_frequencia",
+        position: 1,
+        color: "#F7900B",
+    },
+];
+
+const salvaAluno = () => {
+    console.log("Salvando aluno");
+}
+
+//#endregion
+
+
 
 export default function id() {
     const local = useLocalSearchParams();
@@ -124,17 +150,21 @@ export default function id() {
      * Função que seta as faltas no banco de dados.
      */
     //TODO: Evitar registros duplicados.
-    const setarFaltas = () => {
+    const salvaFrequencia = () => {
         console.log("Setar faltas pressed");
         faltasDoDia.forEach(async element => {
             const alunoDocRef = doc(db, "alunos", element.toString());
-            await updateDoc(alunoDocRef, { faltas: arrayUnion(new Date()) })
+            await updateDoc(alunoDocRef, { faltas: arrayUnion(new Date()) }), 
+            console.log("Falta registrada"),
+            setCheckboxEnabled(false);
     })
-}
+    }
 
+    const [checkboxEnabled, setCheckboxEnabled] = useState(true);
 
     return (
-        <View>
+        <View className="flex-1">
+
             {/* TODO: Refatorar como componente */}
             <View className="justify-center items-center bg-blue-accent m-12 mb-0 rounded-lg ">
                 <Text className="color-white pt-3 p-0 mb-3">{MesAtual.toUpperCase()}</Text>
@@ -156,17 +186,29 @@ export default function id() {
             <View className="justify-center items-center ">
                 <View className="flex-row justify-between items-baseline">
                     <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toString().toLocaleUpperCase()}</Text>
-                    <Pressable onPress={setarFaltas} className="pl-6">
-                        <Text>AQUI</Text>
-                    </Pressable>
                 </View>
                 <ScrollView>
                     {
                         dados.map(dado => (
-                            <AlunoChamada nomeAluno={dado.nome} key={dado.id} estaMarcado={estaMarcado} onPress={() => handleCheckbox(dado.id)} />
+                            <AlunoChamada checkboxEnabled={checkboxEnabled} nomeAluno={dado.nome} key={dado.id} estaMarcado={estaMarcado} onPress={() => handleCheckbox(dado.id)} />
                         ))
                     }
                 </ScrollView>
+            </View>
+            <View style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0,
+            }}>
+                
+                <FloatingAction 
+                color="#152E45"
+            distanceToEdge={{vertical: 30, horizontal:30}}
+            actions={actions}
+            onPressItem={name => name == "bt_add_aluno" ? salvaAluno() : salvaFrequencia()}
+/>
             </View>
         </View>
     )
