@@ -7,7 +7,7 @@ import CardRelatorio from "../../../components/card-relatorio";
 export default function Relatorio(){
     return (
         <View style={{ flex: 1 }}>
-            <View style={{ position: "absolute", top: 0, left: 0, right: 0 }}>
+            <View style={{ position: "absolute", top: 0, left: 0, right: 0, }}>
                 <CardRelatorio />
             </View>
 
