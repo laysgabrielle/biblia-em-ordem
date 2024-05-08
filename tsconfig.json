@@ -11,5 +11,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-  ]
+, "src/app/(tabs)/relatorio/relat/drawer.js", "src/app/(tabs)/relatorio/relat/index.js", "src/app/(tabs)/formulario.tsx", "src/components/card-relatorio.js"  ]
 }
