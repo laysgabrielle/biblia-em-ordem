@@ -79,19 +79,41 @@ export default function Turmas(){
         },
     ];
 
-    const deleteTurma = async (nomeTurma: string) => {
-        console.log("Deletando turma " + nomeTurma);
-        const turmaDocRef = doc(db, "turmas", "turma"+nomeTurma);
-        await deleteDoc(turmaDocRef);
+    const [turmaToDelete, setTurmaToDelete] = useState<string[]>([]);
+    const deleteTurma =  () => {
+        console.log("Deletando turma ");
+        turmaToDelete.forEach(async turma => {
+            const turmaDocRef = doc(db, "turmas", "turma"+turma);
+            await deleteDoc(turmaDocRef);
+        });
         console.log("Turma deletada com sucesso");
+        getTurmas();
     }
 
-    const createTurma = async (nomeTurma: string) => {
-        console.log("Criando turma " + nomeTurma);
-        await setDoc(doc(db, "turmas", "turma"+nomeTurma), {
-            nome: nomeTurma,        
+    const handleCheckboxDelete = (id: string) => {
+        if(!turmaToDelete.includes(id)){
+            turmaToDelete.push(id);
+            console.log(turmaToDelete);    
+        } else {
+            //Remove o id do aluno do array de faltas
+            turmaToDelete.splice(turmaToDelete.indexOf(id), 1);
+            console.log(turmaToDelete);
+        }
+    }
+
+
+
+    const [textoDoTextInput, setTextoDoTextInput] = useState('');
+    const handleInputChange = (novoTexto: string) => {
+        setTextoDoTextInput(novoTexto);
+    };
+    const createTurma = async () => {
+        console.log("Criando turma " + textoDoTextInput);
+        await setDoc(doc(db, "turmas", "turma"+textoDoTextInput), {
+            nome: textoDoTextInput,        
         });
         console.log("Turma criada com sucesso");
+        getTurmas();
     }
 
     return (
@@ -131,12 +153,12 @@ export default function Turmas(){
                                 renderItem={({item}) =>
                                 <View className="flex-row justify-between"> 
                                     <Text className="color-white p-3" >{item}</Text>
-                                    <BouncyCheckbox isChecked={false} onPress={() => console.log("a")} /> 
+                                    <BouncyCheckbox isChecked={false} onPress={() => handleCheckboxDelete(item)} /> 
                                     </View>
                                 }>
                                 </FlatList>
                                 <View className="flex-row justify-center items-center">
-                                    <Pressable className="p-3 m-3" onPress={() => deleteTurma("")}>
+                                    <Pressable className="p-3 m-3" onPress={() => deleteTurma()}>
                                         <MaterialIcons name="check" size={24} color="white"/>
                                     </Pressable>
                                     <Pressable className="p-3 m-3" onPress={() => setModalDeletarVisible(false)}>
@@ -148,7 +170,7 @@ export default function Turmas(){
                     </Portal>
             <Portal>
                 <Modal visible={modalAdicionarVisible} onDismiss={() => setModalAdicionarVisible(false)}>
-                    <MAdicionarTurma/>
+                    <MAdicionarTurma salvarTurma={createTurma} onInputChange={handleInputChange}/>
                 </Modal>
             </Portal>
         </View>
@@ -160,7 +182,7 @@ export default function Turmas(){
                 bottom: 0,
             }}>
                 <FloatingAction actions={actions} onPressItem={name => 
-                    {if(name == "btn_add_turma"){setModalAdicionarVisible(true)} 
+                    {if(name == "bt_add_turma"){setModalAdicionarVisible(true)} 
                     else if(name == "bt_deleta_turma"){setModalDeletarVisible(true)} }
                     } color="#152E45" distanceToEdge={{vertical: 30, horizontal:30}}/>
             </View>
