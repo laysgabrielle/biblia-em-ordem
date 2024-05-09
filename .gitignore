@@ -1,9 +1,12 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
+firebase/
+
 # dependencies
 node_modules/
 package-lock.json
-firebase/firebaseConfig.js
+firebase/
+
 
 # Expo
 .expo/
@@ -41,4 +44,3 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
-firebase/firebaseConfig.js
