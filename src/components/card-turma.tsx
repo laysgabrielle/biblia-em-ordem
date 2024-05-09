@@ -16,7 +16,6 @@ type props = {
 
 export default function CardTurma(props: props){
 
-
         return(<View className="justify-center items-center bg-blue-accent w-44 h-64 my-6 rounded-xl shadow-blue-dark shadow-lg "> 
         <Text className="font-bold color-white">{props.nomeTurma}</Text>
         <MaterialIcons name={props.icone} size={50} color="white" className="p-5"/>
