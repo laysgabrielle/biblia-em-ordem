@@ -3,11 +3,16 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import db from "../../../../../firebase/firebaseConfig";
 import { collection, getDocs, query } from "firebase/firestore";
 
-const Drawer = ({ onClose, onSelectFilter }) => {
-  const [turmas, setTurmas] = useState([]);
-  const [selectedTurmas, setSelectedTurmas] = useState([]);
+interface DrawerProps {
+  onClose: () => void;
+  onSelectFilter: (selectedTurmas: string[]) => void;
+}
 
-  useEffect(() => {
+const Drawer: React.FC<DrawerProps> = ({ onClose, onSelectFilter }) => {
+  const [turmas, setTurmas] = useState<string[]>([]);
+  const [selectedTurmas, setSelectedTurmas] = useState<string[]>([]);
+
+  useEffect(() =>  {
     const fetchTurmas = async () => {
       try {
         const turmasSnapshot = await db.collection('turmas').get();
@@ -25,7 +30,7 @@ const Drawer = ({ onClose, onSelectFilter }) => {
     };
   }, []);
 
-  const toggleTurma = (turma) => {
+  const toggleTurma = (turma: string) => {
     if (selectedTurmas.includes(turma)) {
       setSelectedTurmas(selectedTurmas.filter(item => item !== turma));
     } else {
