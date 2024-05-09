@@ -12,6 +12,6 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-  ],
+, "src/components/card-info-form.tsx"  ],
   "extends": "expo/tsconfig.base"
 }
