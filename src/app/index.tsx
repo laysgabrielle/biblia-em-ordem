@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View, Image, StyleSheet, Dimensions } from "react-native";
 import { Link } from "expo-router";
+import CardSelecao from "../components/selecao-aluno";
 
 const { width, height } = Dimensions.get("window");
 
@@ -13,14 +14,24 @@ export default function Home(){
             />
 
             <Link href={"feed/"}>
-                <Text>Avançar</Text>
+
+                <CardSelecao title="oi" />
             </Link>
+
+            
+            
+            <Text style={styles.textAboveImage}>Sua frase aqui</Text>
 
             <Image
                 source={require('../../assets/images/blindem.png')}
                 style={styles.image}
             />
+            <View>
+            <Text style={{fontSize: 20,}}>Sua frase aqui</Text>
+                
+            </View>
         </View>
+        
     )
 }
 
@@ -33,7 +44,13 @@ const styles = StyleSheet.create({
     },
     image: {
         marginHorizontal: 0,
-        width: width - 0, // Definindo a largura da imagem para ocupar o restante do espaço disponível
+        width: width - 0, 
         
+    },
+    textAboveImage: {
+        fontSize: 20,
+        color: 'white',
+        marginBottom: 10,
+        alignItems: 'center',
     },
 });
