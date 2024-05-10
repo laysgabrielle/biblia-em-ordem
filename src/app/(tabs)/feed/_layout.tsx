@@ -18,18 +18,18 @@ export default function TabLayout() {
                     screenOptions={{
                     headerShown: false,
                     tabBarStyle: {
-                        backgroundColor: '#152E45',
+                        backgroundColor: "#c6c6c6",
                         borderTopWidth: 0,
                         minHeight: 74,
                     },
                     tabBarItemStyle: {
-                        paddingBottom: 25,
-                        paddingTop: 14,
+                        paddingBottom: 5,
+                        paddingTop: 1,
                     },
-                    tabBarActiveTintColor: '#FFFF00',
-                    tabBarInactiveTintColor: '#B9C1C7',
+                    tabBarActiveTintColor: "#c6c6c6",
+                    tabBarInactiveTintColor: "#c6c6c6",
                     tabBarLabelStyle: {
-                        fontSize: 20, 
+                        fontSize: 2, 
                     },
                 }}>
                     <Tabs.Screen

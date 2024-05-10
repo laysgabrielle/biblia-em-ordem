@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Text, View, TouchableOpacity, Image } from "react-native";
 
 type props = {
@@ -40,6 +41,10 @@ function CardEvento(props: props) {
                         resizeMode: "cover",
                     }}
                 />
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%',position: 'absolute', paddingHorizontal: 10, marginTop:10}}>
+                <MaterialIcons name="delete" size={20} color="orange"/>
+                <MaterialIcons name="edit" size={20} color="orange" />
+                </View>
                 <View
                     style={{
                         padding: 12,
