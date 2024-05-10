@@ -7,14 +7,6 @@ import { Href, Link } from "expo-router";
 <<<<<<< HEAD
 import db from "../../../../firebase/firebaseConfig.js";
 import { collection, getDocs, query } from "firebase/firestore";
-=======
-import db from "../../../../firebase/firebaseConfig";
-import { collection, deleteDoc, getDocs, query, doc, setDoc } from "firebase/firestore";
-import { FloatingAction } from "react-native-floating-action";
-import { Modal, PaperProvider, Portal } from "react-native-paper";
-import MAdicionarTurma from "../../../components/m-adicionar-turma";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
->>>>>>> 8d4d490f65e7b628948dc4073f4e981e3fb4fd21
 
 export default function Turmas(){
     const [nomesTurmas, setNomesTurmas] = useState<string[]>([]);
