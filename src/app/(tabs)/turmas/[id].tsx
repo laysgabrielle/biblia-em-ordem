@@ -8,7 +8,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { FloatingAction } from "react-native-floating-action";
 
 import db from "../../../../firebase/firebaseConfig";
-import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, deleteDoc, setDoc, addDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, deleteDoc, setDoc, addDoc, getDoc } from "firebase/firestore";
 import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
 import MAdicionarAluno from "../../../components/m-adicionar-aluno";
@@ -112,6 +112,13 @@ export default function id() {
     })
     }
     const [modalEditarAluno, setModalEditarAluno] = useState(false);
+    const [getIdAluno, setIdAluno] = useState<string>("");
+
+    const handleEditarAluno = (id_aluno: string) => {
+        setModalEditarAluno(true);
+        setIdAluno(id_aluno);
+    }
+
     const [checkboxEnabled, setCheckboxEnabled] = useState(true);
     const [editandoAluno, setEditandoAluno] = useState(false);
     const modoEditarAluno = () => {
@@ -143,6 +150,14 @@ export default function id() {
         fetchDataAlunos();
     }
 
+    const salvaEditAluno = async () => {
+        
+        await updateDoc(doc(db, "alunos", getIdAluno?.toString()), {
+            nome: textNomeAluno,
+            dataNascimento: textDataNascimento,     
+        });
+        fetchDataAlunos();
+    }
 
     return (
         <PaperProvider>
@@ -176,7 +191,7 @@ export default function id() {
                             <AlunoChamada 
                                 deleteAluno={() => deletarAluno(dado.id)} 
                                 modoEditar={editandoAluno} 
-                                editarAluno={() => setModalEditarAluno(true)}
+                                editarAluno={() => handleEditarAluno(dado.id)}
                                 checkboxEnabled={checkboxEnabled} 
                                 nomeAluno={dado.nome} 
                                 key={dado.id} 
@@ -225,7 +240,7 @@ export default function id() {
         <Portal>
             <Modal visible={modalEditarAluno} onDismiss={() => setModalEditarAluno(false)}>
                 <View className="bg-blue-dark bg-opacity-95 rounded-xl p-2 shadow-lg m-16 shadow-black drop-shadow-md justify-center items-center" style={{width: 285}}>
-                    {/* <MAdicionarAluno/> */}
+                    <MAdicionarAluno onInputDataNascimentoChange={salvaTextDataAluno} onInputNomeChange={salvaTextNomeAluno} salvarAluno={() => salvaEditAluno()}/>
                 </View>
                 </Modal>
         </Portal>
