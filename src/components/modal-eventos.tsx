@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
-import { Text, View, Image, TextInput } from "react-native";
+import { Text, View, Image, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 interface CardModalProps {
     title: string;
+    closeModal: () => void;
 }
 
-const CardModal: React.FC<CardModalProps> = (props) => {
+const ModalEventos: React.FC<CardModalProps> = (props) => {
     const [inputText, setInputText] = useState<string>("");
-
+    const [modalVisible, setModalVisible] = useState(false);
     return (
         <View style={{
-            width: 270,
-            height: 350,
+            width: 275,
+            height: 410,
             backgroundColor: "#152E45",
             borderRadius: 15,
             padding: 5,
-            margin: 10
+            margin: 2,
         }}>
+            <TouchableOpacity onPress={props.closeModal}>
+            <MaterialIcons name="arrow-back" size={20} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 8 }}/>
+            </TouchableOpacity>
             <View style={{ alignItems: 'center' }}>
                 <Text style={{ color: "white", fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
                     {props.title}
@@ -37,6 +41,7 @@ const CardModal: React.FC<CardModalProps> = (props) => {
             </View>
             <MaterialIcons name="edit" size={20} color="white" style={{ marginLeft: 125,position:'absolute',marginTop:95 }}/>
             <View style={{ marginBottom: 8 }}>
+            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Evento</Text>
                 <TextInput
                     placeholder="Encontro..."
                     onChangeText={(text) => setInputText(text)}
@@ -53,6 +58,7 @@ const CardModal: React.FC<CardModalProps> = (props) => {
             </View>
 
             <View style={{ marginBottom: 8 }}>
+            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Local</Text>
                 <TextInput
                     placeholder="Igreja..."
                     onChangeText={(text) => setInputText(text)}
@@ -69,6 +75,7 @@ const CardModal: React.FC<CardModalProps> = (props) => {
             </View>
 
             <View style={{ marginBottom: 8 }}>
+                <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Informações</Text>
                 <TextInput
                     placeholder="Informações..."
                     onChangeText={(text) => setInputText(text)}
@@ -83,9 +90,12 @@ const CardModal: React.FC<CardModalProps> = (props) => {
                     }}
                 />
             </View>
+            <TouchableOpacity onPress={props.closeModal}>
+                <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 230, marginTop: 5 }} />
+            </TouchableOpacity>
 
         </View>
     )
 }
 
-export default CardModal;
+export default ModalEventos;

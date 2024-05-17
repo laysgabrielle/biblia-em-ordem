@@ -1,6 +1,8 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Text, View, TouchableOpacity, Image } from "react-native";
+import { Text, View, Image } from "react-native";
+import { Modal, TouchableOpacity  } from 'react-native';
+import ModalRecados from './modal-recados';
 
 type props = {
     title: string,
@@ -10,6 +12,12 @@ type props = {
 
 function CardRecado(props: props) {
     const [showDetails, setShowDetails] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [activeLink, setActiveLink] = useState<string | null>(null);
+
+    const closeModal = () => {
+        setModalVisible(false);
+    }
 
     return (
         <TouchableOpacity
@@ -37,7 +45,9 @@ function CardRecado(props: props) {
             >
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 10}}>
                 <MaterialIcons name="delete" size={20} color="orange"/>
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
                 <MaterialIcons name="edit" size={20} color="orange" />
+                </TouchableOpacity>
                 </View>
                 <Image
                     source={require("../../assets/images/feed.jpg")} // Caminho da imagem
@@ -65,6 +75,39 @@ function CardRecado(props: props) {
                         </Text>
                     )}
                 </View>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: 22,
+                    }}>
+                        <View style={{
+                            margin: 20,
+                            backgroundColor: 'white',
+                            borderRadius: 20,
+                            padding: 2,
+                            alignItems: 'center',
+                            shadowColor: '#000',
+                            shadowOffset: {
+                                width: 0,
+                                height: 2,
+                            },
+                            shadowOpacity: 0.25,
+                            shadowRadius: 1,
+                            elevation: 5,
+                        }}>
+                            <ModalRecados title="Editar Lição" closeModal={closeModal} />
+                        </View>
+                    </View>
+                </Modal>
             </View>
         </TouchableOpacity>
     );
