@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { Tabs } from "expo-router";
 import CardFeed from "../../../components/card-feed";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
     const [activeTab, setActiveTab] = useState("index");
 
     return (
         <View style={{ flex: 1, flexDirection: "column" }}>
-            <View style={{ flex: 1 }}>
+            <View>
                 <View>
                     <CardFeed title="Titulo da Revista" subtitle="Titulo da Lição" />
                 </View>
@@ -18,18 +19,18 @@ export default function TabLayout() {
                     screenOptions={{
                     headerShown: false,
                     tabBarStyle: {
-                        backgroundColor: '#152E45',
+                        backgroundColor: "#c6c6c6",
                         borderTopWidth: 0,
                         minHeight: 74,
                     },
                     tabBarItemStyle: {
-                        paddingBottom: 25,
-                        paddingTop: 14,
+                        paddingBottom: 5,
+                        paddingTop: 1,
                     },
-                    tabBarActiveTintColor: '#FFFF00',
-                    tabBarInactiveTintColor: '#B9C1C7',
+                    tabBarActiveTintColor: "#c6c6c6",
+                    tabBarInactiveTintColor: "#c6c6c6",
                     tabBarLabelStyle: {
-                        fontSize: 20, 
+                        fontSize: 2, 
                     },
                 }}>
                     <Tabs.Screen
@@ -53,5 +54,5 @@ export default function TabLayout() {
                 </Tabs>
             </View>
         </View>
-    );
+    )
 }

@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, View, Image } from "react-native";
 import { Link } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FloatingAction } from "react-native-floating-action";
@@ -6,12 +6,19 @@ import { FloatingAction } from "react-native-floating-action";
 
 export default function Home(){
     return(
-        <View className="flex-1 justify-center items-center">
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#152E45' }}>
+
+            <Image
+                source={require('../../assets/images/feed.jpg')}
+                style={{ width: 100, height: 100, borderRadius: 50 }}
+            />
+
             <Link href={"feed/"}>
                 <Text>Avançar</Text>
             </Link>
 
 
         </View>
+        
     )
 }
