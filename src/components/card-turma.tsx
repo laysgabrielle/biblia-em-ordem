@@ -1,7 +1,7 @@
 import { View, Text, Pressable, TouchableHighlight } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import {useState} from "react";
-import { Href, Link } from "expo-router";
+import { Link } from "expo-router";
 
 type props = {
     nomeTurma: string;
@@ -15,7 +15,7 @@ type props = {
 
 
 export default function CardTurma(props: props){
-        const [temPermissao, setPermissao] = useState(false);
+
         return(<View className="justify-center items-center bg-blue-accent w-44 h-64 my-6 rounded-xl shadow-blue-dark shadow-lg "> 
         <Text className="font-bold color-white">{props.nomeTurma}</Text>
         <MaterialIcons name={props.icone} size={50} color="white" className="p-5"/>

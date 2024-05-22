@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Text, View, TouchableOpacity, Image } from "react-native";
 
+
 interface Props {
-    location: string;
     title: string;
-    info:String;
+    location: String;
+    info: String;
 }
 
-function CardRecado(props:Props) {
+function CardRecado(props: Props) {
     const [showDetails, setShowDetails] = useState(false);
 
     return (

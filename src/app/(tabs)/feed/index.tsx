@@ -12,7 +12,7 @@ export default function Home() {
         alignItems: "center", // Alinhamento horizontal centralizado
       }}
     >
-            <CardEvento
+      <CardEvento
         title="Evento"
         location="Igreja Assembléia de Deus"
         info="Venha para nosso encontro de jovens! O evento será realizado com o objetivo de reunir nossos jovens para uma confraternização."

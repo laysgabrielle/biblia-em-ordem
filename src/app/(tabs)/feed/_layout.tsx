@@ -14,24 +14,24 @@ export default function TabLayout() {
                 </View>
             </View>
             <View style={{ flex: 1 }}>
-                <Tabs 
+                <Tabs
                     screenOptions={{
-                    headerShown: false,
-                    tabBarStyle: {
-                        backgroundColor: '#152E45',
-                        borderTopWidth: 0,
-                        minHeight: 74,
-                    },
-                    tabBarItemStyle: {
-                        paddingBottom: 25,
-                        paddingTop: 14,
-                    },
-                    tabBarActiveTintColor: '#FFFF00',
-                    tabBarInactiveTintColor: '#B9C1C7',
-                    tabBarLabelStyle: {
-                        fontSize: 20, 
-                    },
-                }}>
+                        headerShown: false,
+                        tabBarStyle: {
+                            backgroundColor: '#152E45',
+                            borderTopWidth: 0,
+                            minHeight: 74,
+                        },
+                        tabBarItemStyle: {
+                            paddingBottom: 25,
+                            paddingTop: 14,
+                        },
+                        tabBarActiveTintColor: '#FFFF00',
+                        tabBarInactiveTintColor: '#B9C1C7',
+                        tabBarLabelStyle: {
+                            fontSize: 20,
+                        },
+                    }}>
                     <Tabs.Screen
                         listeners={{
                             tabPress: () => setActiveTab('index')

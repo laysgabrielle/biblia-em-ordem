@@ -3,10 +3,13 @@ import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 import React, {useState, useEffect} from "react";
 import CardTurma from "../../../components/card-turma";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Href, Link } from "expo-router";
-<<<<<<< HEAD
-import db from "../../../../firebase/firebaseConfig.js";
-import { collection, getDocs, query } from "firebase/firestore";
+import { Link } from "expo-router";
+import db from "../../../../firebase/firebaseConfig";
+import { collection, deleteDoc, getDocs, query, doc, setDoc } from "firebase/firestore";
+import { FloatingAction } from "react-native-floating-action";
+import { Modal, PaperProvider, Portal } from "react-native-paper";
+import MAdicionarTurma from "../../../components/m-adicionar-turma";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 export default function Turmas(){
     const [nomesTurmas, setNomesTurmas] = useState<string[]>([]);
@@ -122,7 +125,7 @@ export default function Turmas(){
            { achouTurmas ? <View className="flex-wrap flex-row justify-evenly items-center">   
               {Object.values(nomesTurmas).map((nomeTurma, index) => (
                 <Link className="m-3" key={index} href={{
-                    pathname: "/turmas/[id]" as Href<string>,
+                    pathname: "/turmas/[id]",
                     params: { id: nomeTurma }
                   }} onPress={() => { console.log(nomeTurma) }} 
                 //   options={{headerShown: false,}}
