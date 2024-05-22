@@ -7,8 +7,8 @@ interface CardSelecaoProps {
 
 const CardSelecao: React.FC<CardSelecaoProps> = ({ title }) => {
   return (
-    <View style={[styles.container, { marginBottom: 200 }]}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold', }}>{title}</Text>
+    <View style={styles.container}>
+      <Text style={styles.text}>{title}</Text>
     </View>
   );
 };
@@ -16,14 +16,15 @@ const CardSelecao: React.FC<CardSelecaoProps> = ({ title }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "orange",
-    width: 200,
-    height: 120,
+    width: 240,
+    height: 90,
     borderRadius: 10,
-    marginBottom: 54,
-    flex: 1,
-    
-    alignItems: 'center',
-    
+    justifyContent: 'center', // Centraliza o texto verticalmente
+    alignItems: 'center', // Centraliza o texto horizontalmente
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 
