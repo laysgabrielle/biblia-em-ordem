@@ -63,7 +63,9 @@ export default function Formulario() {
                     <Link className="m-3" key={index} href={{
                         pathname: "/formulario/[id]",
                         params: { id: nomeTurma }
-                    }} onPress={() => { console.log(nomeTurma) }}
+                    }} onPress={() =>
+                        console.log(nomeTurma)
+                    }
                     //   options={{headerShown: false,}}
                     >
                         <CardTurma deletar={() => console.log("qa")} temPermissao={true} nomeTurma={nomeTurma} icone="book" />
