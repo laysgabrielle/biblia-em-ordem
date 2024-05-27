@@ -1,18 +1,22 @@
 import React from "react";
 import { Text, View, Image, StyleSheet } from "react-native";
 
-function CardRelatorio(props) {
+interface CardRelatorioProps {
+    title: string;
+}
+
+const CardRelatorio: React.FC<CardRelatorioProps> = (props) => {
     return (
         <View style={styles.container}>
             {/* Título e Subtítulo ao lado esquerdo */}
             <View style={styles.textContainer}>
-                <Text style={styles.title}>A igreja somos nós</Text>
+                <Text style={styles.title}>"A igreja somos nós, a igreja é união"</Text>
                 <Text style={styles.subtitle}>{props.title}</Text>
             </View>
             {/* Círculo para imagem com cor laranja */}
             <View style={styles.imageContainer}>
                 <Image
-                    source={require("../../assets/images/pomba.png")}
+                    source={require("../../assets/images/dove.png")}
                     style={styles.image}
                 />
             </View>
@@ -30,26 +34,31 @@ const styles = StyleSheet.create({
         position: "relative",
     },
     imageContainer: {
-        width: 200,
-        height: 200,
-        borderRadius: 100, // Metade da largura/altura para formar um círculo
+        right: 0, // Alinhar à direita
+        width: 300, // Ajustar a largura do container conforme necessário
+        height: 300, // Ajustar a altura do container conforme necessário
+        borderRadius: 150, // Metade da largura/altura para formar um círculo
         overflow: "hidden",
-        marginLeft: 10, // Espaço entre o texto e a imagem
         backgroundColor: "#152E45", // Cor de fundo do círculo
-        marginTop: -20, // Movendo o círculo para cima
+        marginLeft: 20,
+        marginRight: -60,
+        marginTop: -70,
+        marginBottom: 20,
     },
     image: {
         width: "100%",
         height: "100%",
-        resizeMode: "cover",
+        resizeMode: "contain",
+        borderRadius: 75, // Metade da largura para formar um círculo
     },
     textContainer: {
         flex: 1, // Para ocupar o espaço restante
         justifyContent: 'flex-start', // Alinhar o texto para o início do contêiner (esquerda)
-        marginTop: -20, // Movendo o texto para cima
+        marginTop: 50, // Espaço entre o texto e o topo
+        marginLeft: 30, // Margem à esquerda
     },
     title: {
-        color: "orange",
+        color: "#152E45",
         fontSize: 28, // Aumentando o tamanho da fonte
     },
     subtitle: {

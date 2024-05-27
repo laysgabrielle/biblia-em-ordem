@@ -17,15 +17,21 @@ interface Turma {
 }
 
 const Drawer: React.FC<DrawerProps> = ({ onClose, onSelectFilter, onConfirm }) => {
-  const [turmas, setTurmas] = useState<Turma[]>([]);
-  const [selectedTurma, setSelectedTurma] = useState<string | null>(null);
+  const [selectedFilters, setSelectedFilters] = useState<{ [key: string]: boolean }>({
+    biblias: false,
+    retardatarios: false,
+    visitantes: false,
+    ofertas: false,
+    revistas: false,
+  });
+
   const [loadingTurmas, setLoadingTurmas] = useState<boolean>(true);
 
   const EncontraDomingos = (): number[] => {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
-    const numDays = new Date(year, month + 1, 0).getDate();
+    const numDays = new Date(year, month + 1, 0).getDate(); // Número de dias no mês atual
     const domingos: number[] = [];
 
     for (let day = 1; day <= numDays; day++) {
@@ -42,75 +48,39 @@ const Drawer: React.FC<DrawerProps> = ({ onClose, onSelectFilter, onConfirm }) =
   const [selectedDomingo, setSelectedDomingo] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchTurmas = async () => {
-      try {
-        const turmasSnapshot = await getDocs(collection(db, 'turmas'));
-        const turmasData = turmasSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          nome: doc.data().nome
-        }));
-        setTurmas(turmasData);
-        setLoadingTurmas(false);
-      } catch (error) {
-        console.error('Erro ao recuperar turmas:', error);
-        setLoadingTurmas(false);
-      }
-    };
-
-    fetchTurmas();
-
     const domingosEncontrados = EncontraDomingos();
     setDomingos(domingosEncontrados);
   }, []);
 
-  const toggleTurma = (turma: string) => {
-    if (selectedTurma === turma) {
-      setSelectedTurma(null);
-    } else {
-      setSelectedTurma(turma);
-    }
-  };
-
-  const toggleDomingo = (domingo: number) => {
-    if (selectedDomingo === domingo) {
-      setSelectedDomingo(null);
-    } else {
-      setSelectedDomingo(domingo);
-    }
-  };
-
-  const handleTurmaConfirm = () => {
-    onSelectFilter(selectedTurma, 'turma');
-  };
-
-  const handleDomingoConfirm = () => {
-    onSelectFilter(selectedDomingo, 'domingo');
+  const toggleFilter = (filter: string) => {
+    setSelectedFilters({ ...selectedFilters, [filter]: !selectedFilters[filter] });
   };
 
   const handleConfirm = () => {
-    handleTurmaConfirm();
-    handleDomingoConfirm();
+    const selectedFields = Object.keys(selectedFilters).filter((filter) => selectedFilters[filter]);
+    selectedFields.forEach((field) => {
+      onSelectFilter(true, field); // Passa 'true' para os campos selecionados
+    });
+    onSelectFilter(selectedDomingo, 'domingo');
     onConfirm();
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Turmas</Text>
-      {loadingTurmas ? (
-        <Text>Carregando...</Text>
-      ) : (
-        turmas.map((turma) => (
-          <TouchableOpacity key={turma.id} onPress={() => toggleTurma(turma.id)} style={styles.checkboxContainer}>
+      <Text style={styles.title}>Campos</Text>
+      <View>
+        {Object.keys(selectedFilters).map((filter) => (
+          <TouchableOpacity key={filter} onPress={() => toggleFilter(filter)} style={styles.checkboxContainer}>
             <RadioButton.Android
-              value={turma.id}
-              status={selectedTurma === turma.id ? 'checked' : 'unchecked'}
-              onPress={() => toggleTurma(turma.id)}
-              color="#FFA500"
+              value={filter}
+              status={selectedFilters[filter] ? 'checked' : 'unchecked'}
+              onPress={() => toggleFilter(filter)}
+              color="#FFA500" // Definindo a cor do RadioButton como laranja
             />
-            <Text style={styles.filterOption}>{turma.nome}</Text>
+            <Text style={styles.filterOption}>{filter}</Text>
           </TouchableOpacity>
-        ))
-      )}
+        ))}
+      </View>
 
       <Text style={styles.title}>Domingos</Text>
       {domingos.map((domingo) => (
@@ -118,10 +88,10 @@ const Drawer: React.FC<DrawerProps> = ({ onClose, onSelectFilter, onConfirm }) =
           <RadioButton.Android
             value={domingo.toString()}
             status={selectedDomingo === domingo ? 'checked' : 'unchecked'}
-            onPress={() => toggleDomingo(domingo)}
-            color="#FFA500"
+            onPress={() => setSelectedDomingo(domingo)}
+            color="#FFA500" // Definindo a cor do RadioButton dos domingos como laranja
           />
-          <TouchableOpacity onPress={() => toggleDomingo(domingo)}>
+          <TouchableOpacity onPress={() => setSelectedDomingo(domingo)}>
             <Text style={styles.filterOption}>{domingo}</Text>
           </TouchableOpacity>
         </View>
@@ -152,7 +122,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: 'white',
+    color: 'white', // Cor do título
   },
   filterOption: {
     fontSize: 18,
