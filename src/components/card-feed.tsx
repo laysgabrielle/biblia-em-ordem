@@ -13,9 +13,17 @@ interface Props {
 const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [activeLink, setActiveLink] = useState<string | null>(null);
+    const [cardTitle, setCardTitle] = useState(title);
+    const [cardSubtitle, setCardSubtitle] = useState(subtitle);
 
     const closeModal = () => {
         setModalVisible(false);
+    }
+
+    const handleUpdate = (newTitle: string, newSubtitle: string) => {
+        setCardTitle(newTitle);
+        setCardSubtitle(newSubtitle);
+        closeModal();
     }
 
     return (
@@ -49,8 +57,8 @@ const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
                 <MaterialIcons name="edit" size={24} color="orange"/>
             </TouchableOpacity>
             <View style={{ position: 'absolute', top: 50, left: 15, padding: 10, }}>
-                <Text style={{ color: '#fff', fontSize: 20 }}>{title}</Text>
-                <Text style={{ color: '#fff', fontSize: 16 }}>{subtitle}</Text>
+                <Text style={{ color: '#fff', fontSize: 20 }}>{cardTitle}</Text>
+                <Text style={{ color: '#fff', fontSize: 16 }}>{cardSubtitle}</Text>
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '100%', margin: 8 }}>
                 <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '100%', margin: 0 }}>
@@ -92,7 +100,11 @@ const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
                             shadowRadius: 1,
                             elevation: 5,
                         }}>
-                            <ModalLicao title="Editar Lição" closeModal={closeModal} />
+                            <ModalLicao title="Editar Lição" 
+                                closeModal={closeModal} 
+                                initialTitle={cardTitle} 
+                                initialSubtitle={cardSubtitle} 
+                                handleUpdate={handleUpdate} />
                         </View>
                     </View>
                 </Modal>
