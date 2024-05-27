@@ -7,9 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
 import { Modal, Portal, PaperProvider, TextInput } from 'react-native-paper';
 import db from "../../../../firebase/firebaseConfig";
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, arrayUnion, setDoc, Timestamp, DocumentReference } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, setDoc } from "firebase/firestore";
 import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
-
 
 
 export default function id() {
@@ -36,7 +35,6 @@ export default function id() {
         },
     })
 
-
     const data = {
         card1: ["Bíblias", "Qtd"],
         card2: ["Revistas", "Qtd"],
@@ -53,51 +51,25 @@ export default function id() {
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
 
-    const sendData = async (biblias: number | undefined, revistas: number | undefined,
-        visitantes: number, retardatarios: number | undefined,
-        ofertas: number | undefined | null, referencia: DocumentReference | undefined) => {
-        await addDoc(collection(db, "dados_obtained"), { //cria um doc em dados_obtained
+    const sendData = async (biblias: number, revistas: number,
+        visitantes: number, retardatarios: number, ofertas: number, date: String) => {
+        const dados_obtained = collection(db, "dados_obtained");
+        await setDoc(doc(db, "dados_obtained", "20-05-2004_SAMUEL"), { //cria um doc em dados_obtained
             biblias: biblias,
             revistas: revistas,
             visitantes: visitantes,
             retardatarios: retardatarios,
             ofertas: ofertas,
-            dia_letivo: Timestamp.now(),
-            referencia: referencia,
-            
+            dia_letivo: date,
         })
     }
 
-    const {id} = useLocalSearchParams() // recebe o nome do doc turma como id
-    const geraRef = (id: string | undefined | string[]) => {
-        if (typeof id === 'string'){
-            const ref = doc(db, "turmas", id);
-            return ref;
-        }
-        else{
-            console.log("O id não recebeu uma string")
-        }
+    const [valorDoTextInput, setValorDoTextInput] = useState<String>('')
+    const handleInputChange = (novoValor: String) => {
+        setValorDoTextInput(novoValor)
     }
-
-    const [valorDoTextInput1, setValorDoTextInput1] = useState<number>(0)
-    const handleInputChange1 = (novoValor: number) => {
-        setValorDoTextInput1(novoValor)  
-    }
-    const [valorDoTextInput2, setValorDoTextInput2] = useState<number>(0)
-    const handleInputChange2 = (novoValor: number) => {
-        setValorDoTextInput2(novoValor) 
-    }
-    const [valorDoTextInput3, setValorDoTextInput3] = useState<number>(0)
-    const handleInputChange3 = (novoValor: number) => {
-        setValorDoTextInput3(novoValor)  
-    }
-    const [valorDoTextInput4, setValorDoTextInput4] = useState<number>(0)
-    const handleInputChange4 = (novoValor: number) => {
-        setValorDoTextInput4(novoValor)  
-    }
-
-    const [valorDoCurrencyInput, setValorDoCurrencyInput] = useState<number | null>(0)
-    const handleCurrencyInputChange = (novoValor: number | null) => {
+    const [valorDoCurrencyInput, setValorDoCurrencyInput] = useState<Number | null>(0)
+    const handleCurrencyInputChange = (novoValor: Number | null) => {
         setValorDoCurrencyInput(novoValor)
     }
     return (
@@ -148,22 +120,14 @@ export default function id() {
                         </Modal>
                     </Portal>
                 </View>
-                <Text>Fomulário da turma: {id}</Text>
                 <ScrollView>
-                    {/*Object.values(data).map((card, index) => {return})*/}
-                    <CardInfoForm title={data.card1[0]}
-                        onInputChange={handleInputChange1} onValueChange={handleCurrencyInputChange} type={data.card1[1]} key={0} />
-                    <CardInfoForm title={data.card2[0]}
-                        onInputChange={handleInputChange2} onValueChange={handleCurrencyInputChange} type={data.card2[1]} key={1} />
-                    <CardInfoForm title={data.card3[0]}
-                        onInputChange={handleInputChange3} onValueChange={handleCurrencyInputChange} type={data.card3[1]} key={2} />
-                    <CardInfoForm title={data.card4[0]}
-                        onInputChange={handleInputChange4} onValueChange={handleCurrencyInputChange} type={data.card4[1]} key={3} />
-                    <CardInfoForm title={data.card5[0]}
-                        onInputChange={handleInputChange1} onValueChange={handleCurrencyInputChange} type={data.card5[1]} key={4} />
+                    {Object.values(data).map((card, index) => {
+                        return <CardInfoForm title={card[0]}
+                            onInputChange={handleInputChange} onValueChange={handleCurrencyInputChange} type={card[1]} key={index} />
+                    })}
                     <Pressable onPress={() => {
-                        sendData(valorDoTextInput1, valorDoTextInput2, 
-                        valorDoTextInput3, valorDoTextInput4, valorDoCurrencyInput, geraRef(id))
+                        console.log(valorDoTextInput)
+                        console.log(valorDoCurrencyInput)
                     }}><Text>Enviar</Text></Pressable>
                 </ScrollView>
             </SafeAreaView>

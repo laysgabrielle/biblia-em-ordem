@@ -6,7 +6,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 interface Props {
     title: string;
     type: string;
-    onInputChange: (texto: number) => void;
+    onInputChange: (texto: String) => void;
     onValueChange: (number: number | null) => void;
 }
 
@@ -18,7 +18,7 @@ function CardInfoForm({title,type,onInputChange,onValueChange}: Props) {
 
     let typeValue = type;
 
-    const [state, setState] = useState<string>('0');
+    const [state, setState] = useState<string>('');
     const [number, setNumber] = useState<number | null>();
     const [temPermissao, setPermissao] = useState(false);
 
@@ -53,8 +53,9 @@ function CardInfoForm({title,type,onInputChange,onValueChange}: Props) {
                         keyboardType="numeric"
                         value={state}
                         onChangeText={(text) => {setState(maskQtd(text))
-                            onInputChange(parseInt(text))
+                            onInputChange(text)
                         }}
+                        placeholder="0"
                         placeholderTextColor={'rgb(185, 193, 199)'}
                     />
                 ) : (
@@ -62,14 +63,15 @@ function CardInfoForm({title,type,onInputChange,onValueChange}: Props) {
                         style={{ color: 'rgb(185, 193, 199)', textAlign: 'center' }}
                         value={number || null}
                         maxLength={6}
-                        onChangeValue={(value) => {
-                            setNumber(value)
-                            onValueChange(value)
+                        onChangeValue={(text) => {
+                            setNumber(text)
+                            onValueChange(text)
                         }}
                         delimiter="."
                         separator=","
                         precision={2}
                         minValue={0}
+                        placeholder="0"
                         placeholderTextColor={'rgb(185, 193, 199)'}
                     />
                 )}
