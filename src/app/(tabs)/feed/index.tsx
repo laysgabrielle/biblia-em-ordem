@@ -18,7 +18,14 @@ export default function Home() {
         alignItems: "center", // Alinhamento horizontal centralizado
       }}
     >
+<<<<<<< HEAD
       <CardEvento
+=======
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <MaterialIcons name = "add" size={28} style={{marginLeft: 355, margin:5}}></MaterialIcons>
+        </TouchableOpacity>
+            <CardEvento
+>>>>>>> fcb1a509caf3e140ee72ff3315c7270d06ef31c4
         title="Evento"
         location="Igreja Assembléia de Deus"
         info="Venha para nosso encontro de jovens! O evento será realizado com o objetivo de reunir nossos jovens para uma confraternização."
