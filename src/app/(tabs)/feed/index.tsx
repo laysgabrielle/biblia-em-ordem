@@ -1,14 +1,26 @@
 import React, { useState } from 'react'
-import { View, Dimensions , Modal, TouchableOpacity} from "react-native";
+import { View,  ScrollView, Modal, TouchableOpacity} from "react-native";
 import CardEvento from "../../../components/card-evento";
 import ModalEventos from "../../../components/modal-eventos";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [cards, setCards] = useState([
+    {
+      title: "Evento",
+      location: "Igreja Assembléia de Deus",
+      info: "Venha para nosso encontro de jovens! O evento será realizado com o objetivo de reunir nossos jovens para uma confraternização.",
+    }
+  ])
   const closeModal = () => {
     setModalVisible(false);
-}
+  }
+  const addCard = (title, location, info) => {
+    setCards([...cards, { title, location, info }]);
+    closeModal();
+  }
+
   return (
     <View
       style={{
@@ -18,18 +30,19 @@ export default function Home() {
         alignItems: "center", // Alinhamento horizontal centralizado
       }}
     >
-<<<<<<< HEAD
-      <CardEvento
-=======
         <TouchableOpacity onPress={() => setModalVisible(true)}>
         <MaterialIcons name = "add" size={28} style={{marginLeft: 355, margin:5}}></MaterialIcons>
         </TouchableOpacity>
-            <CardEvento
->>>>>>> fcb1a509caf3e140ee72ff3315c7270d06ef31c4
-        title="Evento"
-        location="Igreja Assembléia de Deus"
-        info="Venha para nosso encontro de jovens! O evento será realizado com o objetivo de reunir nossos jovens para uma confraternização."
-      />
+      <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>  
+      {cards.map((card, index) => (
+          <CardEvento
+            key={index}
+            title={card.title}
+            location={card.location}
+            info={card.info}
+          />
+        ))} 
+     </ScrollView> 
       <Modal
                     animationType="slide"
                     transparent={true}
@@ -59,7 +72,7 @@ export default function Home() {
                             shadowRadius: 1,
                             elevation: 5,
                         }}>
-                            <ModalEventos title="Editar Lição" closeModal={closeModal} />
+                            <ModalEventos title="Editar Lição" closeModal={closeModal} addCard={addCard} />
                         </View>
                     </View>
                 </Modal>

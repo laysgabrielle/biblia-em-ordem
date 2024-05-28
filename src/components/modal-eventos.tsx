@@ -5,11 +5,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 interface CardModalProps {
     title: string;
     closeModal: () => void;
+    addCard: (title: string, location: string, info: string) => void;
 }
 
 const ModalEventos: React.FC<CardModalProps> = (props) => {
     const [inputText, setInputText] = useState<string>("");
     const [modalVisible, setModalVisible] = useState(false);
+    const [title, setTitle] = useState<string>("");
+    const [location, setLocation] = useState<string>("");
+    const [info, setInfo] = useState<string>("");
     return (
         <View style={{
             width: 275,
@@ -44,8 +48,8 @@ const ModalEventos: React.FC<CardModalProps> = (props) => {
             <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Evento</Text>
                 <TextInput
                     placeholder="Encontro..."
-                    onChangeText={(text) => setInputText(text)}
-                    value={inputText}
+                    onChangeText={(text) => setTitle(text)}
+                    value={title}
                     style={{
                         width: '80%',
                         height: 40,
@@ -61,8 +65,8 @@ const ModalEventos: React.FC<CardModalProps> = (props) => {
             <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Local</Text>
                 <TextInput
                     placeholder="Igreja..."
-                    onChangeText={(text) => setInputText(text)}
-                    value={inputText}
+                    onChangeText={(text) => setLocation(text)}
+                    value={location}
                     style={{
                         width: '80%',
                         height: 40,
@@ -78,8 +82,8 @@ const ModalEventos: React.FC<CardModalProps> = (props) => {
                 <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Informações</Text>
                 <TextInput
                     placeholder="Informações..."
-                    onChangeText={(text) => setInputText(text)}
-                    value={inputText}
+                    onChangeText={(text) => setInfo(text)}
+                    value={info}
                     style={{
                         width: '80%',
                         height: 40,
@@ -90,7 +94,7 @@ const ModalEventos: React.FC<CardModalProps> = (props) => {
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={props.closeModal}>
+            <TouchableOpacity onPress={() => props.addCard(title,location, info)}>
                 <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 230, marginTop: 5 }} />
             </TouchableOpacity>
 

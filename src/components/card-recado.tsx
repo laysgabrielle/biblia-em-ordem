@@ -4,16 +4,6 @@ import { Text, View, Image } from "react-native";
 import { Modal, TouchableOpacity  } from 'react-native';
 import ModalRecados from './modal-recados';
 
-<<<<<<< HEAD
-
-interface Props {
-    title: string;
-    location: String;
-    info: String;
-}
-
-function CardRecado(props: Props) {
-=======
 type props = {
     title: string,
     location: string,
@@ -21,7 +11,6 @@ type props = {
 }
 
 function CardRecado(props: props) {
->>>>>>> fcb1a509caf3e140ee72ff3315c7270d06ef31c4
     const [showDetails, setShowDetails] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [activeLink, setActiveLink] = useState<string | null>(null);
