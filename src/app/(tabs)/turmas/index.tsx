@@ -39,23 +39,30 @@ export default function Turmas(){
     const actions = [
         {
             text: "Adicionar Turma",
+            textStyle: {padding: 1, fontSize: 16, margin: 0,},
             icon: <MaterialIcons name="person-add" size={24} color="white" />,
             name: "bt_add_turma",
             position: 1,
             color: "#F7900B",
+            buttonSize: 42,
         },
         {
             text: "Deletar Turma",
+            textStyle: {padding: 1, fontSize: 16, margin: 0,},
             icon: <MaterialIcons name="delete-outline" size={24} color="white" />,
             name: "bt_deleta_turma",
             position: 2,
             color: "#F7900B",
-        },        {
+            buttonSize: 42,
+        },        
+        {
             text: "Editar Turma",
+            textStyle: {padding: 1, fontSize: 16, margin: 0,},
             icon: <MaterialIcons name="edit" size={24} color="white" />,
             name: "bt_edita_turma",
             position: 3,
             color: "#F7900B",
+            
         },
     ];
 
@@ -98,10 +105,8 @@ export default function Turmas(){
 
     return (
         <PaperProvider>
-        <View className="flex-1 mx-4 mt-20">
-             <View className="mx-7 mt-16 mb-1 ">
-                <TextInput className="bg-blue-accent rounded-xl color-white p-3" placeholder="Search"/>           
-                </View> 
+        <View className="bg-gray-base flex flex-1">
+        <View className="flex-1 mx-4 mt-48 bg-gray-base">
            { achouTurmas ? <View className="flex-wrap flex-row justify-evenly items-center">   
               {Object.values(nomesTurmas).map((nomeTurma, index) => (
                 <Link className="m-3" key={index} href={{
@@ -161,10 +166,11 @@ export default function Turmas(){
                 left: 0,
                 bottom: 0,
             }}>
-                <FloatingAction actions={actions} onPressItem={name => 
+                <FloatingAction buttonSize={56} actions={actions} onPressItem={name => 
                     {if(name == "bt_add_turma"){setModalAdicionarVisible(true)} 
                     else if(name == "bt_deleta_turma"){setModalDeletarVisible(true)} }
                     } color="#152E45" distanceToEdge={{vertical: 30, horizontal:30}}/>
+            </View>
             </View>
         </PaperProvider>
     )

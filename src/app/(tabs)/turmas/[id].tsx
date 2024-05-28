@@ -17,24 +17,30 @@ import MAdicionarAluno from "../../../components/m-adicionar-aluno";
 const actions = [
     {
         text: "Adicionar Aluno",
+        textStyle: {padding: 1, fontSize: 16, margin: 0,},
         icon: <MaterialIcons name="person-add" size={24} color="white" />,
         name: "bt_add_aluno",
         position: 2,
         color: "#F7900B",
+        buttonSize: 42,
     },
     {
         text: "Salvar frequência",
+        textStyle: {padding: 1, fontSize: 16, margin: 0,},
         icon: <MaterialIcons name="save" size={24} color="white" />,
         name: "bt_salvar_frequencia",
         position: 1,
         color: "#F7900B",
+        buttonSize: 42,
     },
     {
         text: "Editar alunos",
+        textStyle: {padding: 1, fontSize: 16, margin: 0,},
         icon: <MaterialIcons name="edit" size={24} color="white" />,
         name: "bt_editar_aluno",
         position: 3,
         color: "#F7900B",
+        buttonSize: 42,
     }
 ];
 
@@ -161,7 +167,7 @@ export default function id() {
 
     return (
         <PaperProvider>
-        <View className="flex-1">
+        <View className="flex-1 bg-gray-base">
 
             {/* TODO: Refatorar como componente */}
             <View className="justify-center items-center bg-blue-accent m-12 mb-0 rounded-lg ">
@@ -210,6 +216,7 @@ export default function id() {
             }}>
                 
                 <FloatingAction 
+                buttonSize={56}
                 color="#152E45"
                 distanceToEdge={{vertical: 30, horizontal:30}}
                 actions={actions}
