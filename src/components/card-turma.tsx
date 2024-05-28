@@ -1,7 +1,7 @@
 import { View, Text, Pressable, TouchableHighlight } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import {useState} from "react";
-import { Href, Link } from "expo-router";
+import { Link } from "expo-router";
 
 type props = {
     nomeTurma: string;
