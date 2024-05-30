@@ -20,7 +20,7 @@ export default function Home() {
       </View>
 
       <View style={styles.cardContainer}>
-        <Link href={"feed/"}>
+        <Link href={"login/"}>
           <CardSelecao title="Professor" />
         </Link>
       </View>
