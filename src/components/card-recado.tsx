@@ -2,21 +2,30 @@ import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Text, View, Image } from "react-native";
 import { Modal, TouchableOpacity  } from 'react-native';
-import ModalRecados from './modal-recados';
+import ModalEdicaoRecados from "./modal-edicao-recados";
 
-type props = {
+interface props {
     title: string,
     location: string,
     info: string,
 }
 
-function CardRecado(props: props) {
+const CardRecado: React.FC<props> = ({ title, location, info }) => {
     const [showDetails, setShowDetails] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [activeLink, setActiveLink] = useState<string | null>(null);
+    const [eventTitle, setEventTitle] = useState(title);
+    const [eventLocation, setEventLocation] = useState(location);
+    const [eventInfo, setEventInfo] = useState(info);
 
     const closeModal = () => {
         setModalVisible(false);
+    }
+
+    const handleUpdate = (newTitle: string, newLocation: string, newInfo: string) => {
+        setEventTitle(newTitle);
+        setEventLocation(newLocation);
+        setEventInfo(newInfo);
+        closeModal();
     }
 
     return (
@@ -50,10 +59,10 @@ function CardRecado(props: props) {
                 </TouchableOpacity>
                 </View>
                 <Image
-                    source={require("../../assets/images/feed.jpg")} // Caminho da imagem
+                    source={require("../../assets/images/recados.jpeg")} // Caminho da imagem
                     style={{
-                        width: showDetails ? 110 : 100,
-                        height: showDetails ? 110 : 100, // Altura da imagem conforme o estado
+                        width: showDetails ? 105 : 100,
+                        height: showDetails ? 105 : 100, // Altura da imagem conforme o estado
                         resizeMode: "cover",
                         borderRadius: 50,
                     }}
@@ -64,14 +73,14 @@ function CardRecado(props: props) {
                     }}
                 >
                     <Text style={{ color: "white", fontSize: 18 ,}}>
-                        {props.title}
+                        {eventTitle}
                     </Text>
                     <Text style={{ color: "white", fontSize: 12 }}>
-                        {props.location}
+                        {eventLocation}
                     </Text>
                     {showDetails && (
                         <Text style={{ color: "white" }}>
-                            {props.info}
+                            {eventInfo}
                         </Text>
                     )}
                 </View>
@@ -104,7 +113,12 @@ function CardRecado(props: props) {
                             shadowRadius: 1,
                             elevation: 5,
                         }}>
-                            <ModalRecados title="Editar Lição" closeModal={closeModal} />
+                            <ModalEdicaoRecados title="Editar Lição" 
+                            closeModal={closeModal}
+                            initialTitle={eventTitle} 
+                            initialLocation={eventLocation} 
+                            initialInfo={eventInfo} 
+                            handleUpdate={handleUpdate} />
                         </View>
                     </View>
                 </Modal>
