@@ -33,7 +33,7 @@ export default function Home() {
         <TouchableOpacity onPress={() => setModalVisible(true)}>
         <MaterialIcons name = "add" size={28} style={{marginLeft: 355, margin:5}}></MaterialIcons>
         </TouchableOpacity>
-      <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>  
+      <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 ,padding:20}}>  
       {cards.map((card, index) => (
           <CardEvento
             key={index}

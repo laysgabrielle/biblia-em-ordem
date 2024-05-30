@@ -60,8 +60,8 @@ const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
                 <Text style={{ color: '#fff', fontSize: 20 }}>{cardTitle}</Text>
                 <Text style={{ color: '#fff', fontSize: 16 }}>{cardSubtitle}</Text>
             </View>
-            <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '100%', margin: 8 }}>
-                <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '100%', margin: 0 }}>
+            <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '100%', margin: 2 }}>
+                <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '100%', margin: 10 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 'auto' }}>
                         <Link href="feed/" onPress={() => setActiveLink('eventos')}>
                             <Text style={{ color: activeLink === 'eventos' ? 'orange' : '#fff', fontSize: 18 }}>Eventos</Text>
