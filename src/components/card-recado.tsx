@@ -5,12 +5,14 @@ import { Modal, TouchableOpacity  } from 'react-native';
 import ModalEdicaoRecados from "./modal-edicao-recados";
 
 interface props {
-    title: string,
-    location: string,
-    info: string,
+    id: string;
+    title: string;
+    location: string;
+    info: string;
+    deleteCard: (id: string) => void;
 }
 
-const CardRecado: React.FC<props> = ({ title, location, info }) => {
+const CardRecado: React.FC<props> = ({id, title, location, info, deleteCard }) => {
     const [showDetails, setShowDetails] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [eventTitle, setEventTitle] = useState(title);
@@ -53,13 +55,15 @@ const CardRecado: React.FC<props> = ({ title, location, info }) => {
                 }}
             >
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 10}}>
-                <MaterialIcons name="delete" size={20} color="orange"/>
+                <TouchableOpacity onPress={() => deleteCard(id)}>
+                    <MaterialIcons name="delete" size={20} color="orange"/>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <MaterialIcons name="edit" size={20} color="orange" />
+                    <MaterialIcons name="edit" size={20} color="orange" />
                 </TouchableOpacity>
                 </View>
                 <Image
-                    source={require("../../assets/images/recados.jpeg")} // Caminho da imagem
+                    source={require("../../assets/images/licao.jpeg")} // Caminho da imagem
                     style={{
                         width: showDetails ? 105 : 100,
                         height: showDetails ? 105 : 100, // Altura da imagem conforme o estado

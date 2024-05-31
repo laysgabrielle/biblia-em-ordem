@@ -8,10 +8,8 @@ interface CardModalProps {
     addCard: (title: string, location: string, info: string) => void;
 }
 
-const ModalEventos: React.FC<CardModalProps> = (props) => {
-    const [inputText, setInputText] = useState<string>("");
-    const [modalVisible, setModalVisible] = useState(false);
-    const [title, setTitle] = useState<string>("");
+const ModalEventos: React.FC<CardModalProps> = ({ title, closeModal, addCard }) => {
+    const [eventotitle, setEventoTitle] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [info, setInfo] = useState<string>("");
     return (
@@ -23,12 +21,12 @@ const ModalEventos: React.FC<CardModalProps> = (props) => {
             padding: 5,
             margin: 2,
         }}>
-            <TouchableOpacity onPress={props.closeModal}>
+            <TouchableOpacity onPress={closeModal}>
             <MaterialIcons name="arrow-back" size={20} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 8 }}/>
             </TouchableOpacity>
             <View style={{ alignItems: 'center' }}>
                 <Text style={{ color: "white", fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
-                    {props.title}
+                    {title}
                 </Text>
             </View>
 
@@ -48,8 +46,8 @@ const ModalEventos: React.FC<CardModalProps> = (props) => {
             <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Evento</Text>
                 <TextInput
                     placeholder="Encontro..."
-                    onChangeText={(text) => setTitle(text)}
-                    value={title}
+                    onChangeText={(text) => setEventoTitle(text)}
+                    value={eventotitle}
                     style={{
                         width: '80%',
                         height: 40,
@@ -94,7 +92,7 @@ const ModalEventos: React.FC<CardModalProps> = (props) => {
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={() => props.addCard(title,location, info)}>
+            <TouchableOpacity onPress={() => addCard(eventotitle,location, info)}>
                 <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 230, marginTop: 5 }} />
             </TouchableOpacity>
 

@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import { Text, View, Image, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
+
 interface CardRecadosProps {
     title: string;
     closeModal: () => void;
     addCard: (title: string, location: string, info: string) => void;
 }
 
-const ModalRecados: React.FC<CardRecadosProps> = (props) => {
-    const [inputText, setInputText] = useState<string>("");
-    const [modalVisible, setModalVisible] = useState(false);
+const ModalRecados: React.FC<CardRecadosProps> = ({ title, closeModal, addCard }) => {
     const [location, setLocation] = useState<string>("");
-    const [title, setTitle] = useState<string>("");
+    const [recadoTitle, setRecadoTitle] = useState<string>("");
     const [info, setInfo] = useState<string>("");
     return (
         <View style={{
@@ -23,12 +22,12 @@ const ModalRecados: React.FC<CardRecadosProps> = (props) => {
             padding: 3,
             margin: 2,
         }}>
-            <TouchableOpacity onPress={props.closeModal}>
+            <TouchableOpacity onPress={closeModal}>
             <MaterialIcons name="arrow-back" size={20} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 5 }}/>
             </TouchableOpacity>
             <View style={{ alignItems: 'center' }}>
                 <Text style={{ color: "white", fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
-                    {props.title}
+                    {title}
                 </Text>
             </View>
 
@@ -48,8 +47,8 @@ const ModalRecados: React.FC<CardRecadosProps> = (props) => {
             <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Titulo</Text>
                 <TextInput
                     placeholder="..."
-                    onChangeText={(text) => setTitle(text)}
-                    value={title}
+                    onChangeText={(text) => setRecadoTitle(text)}
+                    value={recadoTitle}
                     style={{
                         width: '80%',
                         height: 40,
@@ -95,7 +94,7 @@ const ModalRecados: React.FC<CardRecadosProps> = (props) => {
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={() => props.addCard(title,location, info)}>
+            <TouchableOpacity onPress={() => addCard(recadoTitle,location, info)}>
                 <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 220, marginTop: 0 }} />
             </TouchableOpacity>
 
