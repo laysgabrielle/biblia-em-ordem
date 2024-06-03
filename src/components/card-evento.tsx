@@ -2,21 +2,30 @@ import React, { useState } from 'react';
 import { Modal, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 import { Text, View, Image } from "react-native";
-import ModalEventos from './modal-eventos';
+import ModalEdicaoEventos from './modal-edicao-evento';
 
-type props = {
+interface Props  {
     title: string,
     location: string,
     info: string,
 }
 
-function CardEvento(props: props) {
+const CardEvento: React.FC<Props> = ({ title, location, info }) => {
     const [showDetails, setShowDetails] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [activeLink, setActiveLink] = useState<string | null>(null);
+    const [eventTitle, setEventTitle] = useState(title);
+    const [eventLocation, setEventLocation] = useState(location);
+    const [eventInfo, setEventInfo] = useState(info);
 
     const closeModal = () => {
         setModalVisible(false);
+    }
+
+    const handleUpdate = (newTitle: string, newLocation: string, newInfo: string) => {
+        setEventTitle(newTitle);
+        setEventLocation(newLocation);
+        setEventInfo(newInfo);
+        closeModal();
     }
 
     return (
@@ -42,7 +51,7 @@ function CardEvento(props: props) {
                 }}
             >
                 <Image
-                    source={require("../../assets/images/feed.jpg")} // Caminho da imagem
+                    source={require("../../assets/images/eventos.jpg")}
                     style={{
                         width: "100%",
                         height: showDetails ? 140 : 100, // Altura da imagem conforme o estado
@@ -61,14 +70,14 @@ function CardEvento(props: props) {
                     }}
                 >
                     <Text style={{ color: "black", fontSize: 14 }}>
-                        {props.title}
+                        {eventTitle}
                     </Text>
                     <Text style={{ color: "black", fontSize: 10 }}>
-                        {props.location}
+                        {eventLocation}
                     </Text>
                     {showDetails && (
                         <Text style={{ color: "black" }}>
-                            {props.info}
+                            {eventInfo}
                         </Text>
                     )}
                 </View>
@@ -101,7 +110,12 @@ function CardEvento(props: props) {
                             shadowRadius: 1,
                             elevation: 5,
                         }}>
-                            <ModalEventos title="Editar Lição" closeModal={closeModal} />
+                            <ModalEdicaoEventos title="Editar Lição" 
+                            closeModal={closeModal}
+                            initialTitle={eventTitle} 
+                            initialLocation={eventLocation} 
+                            initialInfo={eventInfo} 
+                            handleUpdate={handleUpdate} />
                         </View>
                     </View>
                 </Modal>
