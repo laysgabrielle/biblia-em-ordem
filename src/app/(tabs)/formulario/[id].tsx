@@ -1,16 +1,15 @@
-import React, { useState } from 'react'
-import { Text, View, SafeAreaView, ScrollView, TouchableOpacity, StyleSheet, Pressable } from "react-native";
-import CardInfoForm from "../../../components/card-info-form"
+import React, { useState, useEffect } from 'react'
+import { Text, View, SafeAreaView, ScrollView, TouchableOpacity, StyleSheet, Pressable, TextInput } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
-import { Modal, Portal, PaperProvider, TextInput } from 'react-native-paper';
+import { Modal, Portal, PaperProvider } from 'react-native-paper';
 import db from "../../../../firebase/firebaseConfig";
 import { collection, addDoc, getDocs, query, where, doc, updateDoc, arrayUnion, setDoc, Timestamp, DocumentReference } from "firebase/firestore";
-import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
-
-
+import { MaterialIcons } from "@expo/vector-icons";
+import CardInfoForm from '../../../components/card-info-form';
+import Checkbox from '../../../components/checkbox-form';
 
 export default function id() {
     const styles = StyleSheet.create({
@@ -18,91 +17,192 @@ export default function id() {
             backgroundColor: '#152E45',
             padding: 10,
             alignSelf: 'center',
-            width: 300,
-            height: 350,
+            width: 270,
+            height: 300,
             borderRadius: 20,
-            borderWidth: 0.5,
+            borderWidth: 2,
             borderColor: 'white',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-around'
+            justifyContent: 'space-around',
+
         },
         modalInput: {
+            width: '100%',
+            height: 40,
             backgroundColor: 'white',
+            borderRadius: 10,
+            padding: 5,
+            alignSelf: 'center',
+
         },
         textModal: {
             color: 'white',
-            fontSize: 13,
+            fontSize: 14,
+            fontStyle: 'italic',
+            fontWeight: 'bold',
         },
     })
 
+    const [temPermissao, setPermissao] = useState(false);
 
-    const data = {
-        card1: ["Bíblias", "Qtd"],
-        card2: ["Revistas", "Qtd"],
-        card3: ["Visitantes", "Qtd"],
-        card4: ["Retardatarios", "Qtd"],
-        card5: ["Ofertas", "R$"],
-    }
+    const [inputs, setInputs] = useState<Input[]>([{ value: 0, title: "Ofertas", isQtd: false },
+    { value: 0, title: "Bíblias", isQtd: true }]);
+
+    const [achouCampos, setAchouCampos] = useState(true);
+
+    const [inputModal, setInputModal] = useState('');
+
+    const [checkQtdModal, setCheckQtdModal] = useState(false);
+    const [checkMoneyModal, setCheckMoneyModal] = useState(false);
 
 
     const router = useRouter(); // para usar o método dismiss()
+
 
     //Define a visibilidade do modal
     const [visible, setVisible] = useState(false);
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
 
+
+    const { id } = useLocalSearchParams() // recebe o nome do doc turma como id
+
+
+    interface Input {
+        value: number | null;
+        title: string;
+        isQtd: boolean;
+    }
+
+
+
+    const geraInput = (isQtd: boolean, title: string) => {
+        setInputs([...inputs, {
+            value: 0,
+            title: title,
+            isQtd: isQtd,
+        }]);
+    }
+
+    const handlerDataEachInput = (index: number, value: number | null) => {
+        const campos = [...inputs]
+        campos[index].value = value
+        setInputs(campos)
+    }
+
+    const campos = collection(db, "campos_form");
+    const getCampos = async () => {
+        try {
+            console.log("Entrou na função getCampos");
+            const q = query(campos);
+            const querySnapshot = await getDocs(q);
+            let arrayHelperCampos: React.SetStateAction<any[]> = [];
+            querySnapshot.forEach((doc) => {
+
+                arrayHelperCampos.push(doc.data());
+                console.log("doc " + doc.data().title)
+
+
+            });
+            setInputs(arrayHelperCampos);
+
+            setAchouCampos(arrayHelperCampos.length > 0);
+            console.log("CamposQtd " + arrayHelperCampos);
+            console.log("CamposMoney " + arrayHelperCampos);
+        } catch (e) {
+            console.log(e);
+        } finally {
+            if (inputs.length == 0 || inputs.length == 0) {
+                setAchouCampos(false);
+            } else {
+                setAchouCampos(true);
+            }
+
+        }
+
+    }
+
+    /*
+    useEffect(() => {
+        getCampos();
+    }, []);
+    */
+
+    const refresh = () => {
+        if (inputs.length == 0)
+            getCampos();
+        else
+            setAchouCampos(true);
+
+    }
+
     const sendData = async (biblias: number | undefined, revistas: number | undefined,
         visitantes: number, retardatarios: number | undefined,
         ofertas: number | undefined | null, referencia: DocumentReference | undefined) => {
         await addDoc(collection(db, "dados_obtained"), { //cria um doc em dados_obtained
-            biblias: biblias,
+
+            /*biblias: biblias,
             revistas: revistas,
             visitantes: visitantes,
             retardatarios: retardatarios,
             ofertas: ofertas,
             dia_letivo: Timestamp.now(),
-            referencia: referencia,
-            
+            referencia: referencia,*/
+
         })
     }
 
-    const {id} = useLocalSearchParams() // recebe o nome do doc turma como id
-    const geraRef = (id: string | undefined | string[]) => {
-        if (typeof id === 'string'){
-            const ref = doc(db, "turmas", id);
-            return ref;
+
+    interface Option {
+        text: string;
+        id: number;
+    };
+
+    const optionsType: Option[] = [{ text: 'Quantidade', id: 0 }, { text: 'Monetário', id: 1 }];
+    const [typeCard, setTypeCard] = useState<number[]>();
+
+    const createNewCard = (title: String, type: number[] | undefined) => {
+        const campos = collection(db, "campos_form");
+        let type_final = true;
+        let title_final;
+        let value = 0;
+    
+        if (type !== undefined) {
+            if (type[0] === 0) {
+                type_final = true;
+            } else if (type[0] === 1) {
+                type_final = false;
+            }
+        }
+
+        if(title === undefined){
+            title_final = 'Novo Campo';
         }
         else{
-            console.log("O id não recebeu uma string")
+            title_final = title;
         }
-    }
+    
+        const novoDoc = {
+            title: title_final,
+            isQtd: type_final,
+            value: value,
+        };
+    
+        addDoc(campos, novoDoc)
+            .then(() => {
+                console.log("Sucesso ao enviar");
+            })
+            .catch((error) => {
+                console.error("Erro ao enviar:", error);
+            });
+    };
+    
 
-    const [valorDoTextInput1, setValorDoTextInput1] = useState<number>(0)
-    const handleInputChange1 = (novoValor: number) => {
-        setValorDoTextInput1(novoValor)  
-    }
-    const [valorDoTextInput2, setValorDoTextInput2] = useState<number>(0)
-    const handleInputChange2 = (novoValor: number) => {
-        setValorDoTextInput2(novoValor) 
-    }
-    const [valorDoTextInput3, setValorDoTextInput3] = useState<number>(0)
-    const handleInputChange3 = (novoValor: number) => {
-        setValorDoTextInput3(novoValor)  
-    }
-    const [valorDoTextInput4, setValorDoTextInput4] = useState<number>(0)
-    const handleInputChange4 = (novoValor: number) => {
-        setValorDoTextInput4(novoValor)  
-    }
 
-    const [valorDoCurrencyInput, setValorDoCurrencyInput] = useState<number | null>(0)
-    const handleCurrencyInputChange = (novoValor: number | null) => {
-        setValorDoCurrencyInput(novoValor)
-    }
     return (
         <PaperProvider>
-            <SafeAreaView className="flex-grow items-center justify-center mt-10">
+            <SafeAreaView className="flex-grow items-center justify-center mt-14">
                 <View className="flex-row items-center justify-between" style={{ width: 342 }}>
                     <View>
                         <TouchableOpacity onPress={() => router.dismiss()}>
@@ -132,39 +232,45 @@ export default function id() {
                                 </View>
                                 <View style={{ width: 35 }}></View>
                             </View>
-                            <View style={{ padding: 10, }}>
+                            <View style={{ padding: 15, }}>
                                 <Text style={styles.textModal}>Categoria:</Text>
-                                <TextInput cursorColor='black' mode='outlined' activeOutlineColor='#000'
-                                    textColor='black'
-                                    style={styles.modalInput}></TextInput>
+                                <TextInput cursorColor='black'
+                                    style={[{ marginBottom: 5 }, styles.modalInput]}
+                                    value={inputModal}
+                                    onChangeText={(text) => setInputModal(text)}
+                                ></TextInput>
                                 <Text style={styles.textModal}>Tipo:</Text>
-                                <TextInput cursorColor='black' mode='outlined' activeOutlineColor='#000'
-                                    textColor='black'
-                                    style={styles.modalInput}></TextInput>
+                                <Checkbox options={optionsType} onChange={(op) => setTypeCard(op)} />
                             </View>
-                            <TouchableOpacity style={{ flexDirection: 'row-reverse' }} onPress={hideModal}>
+                            <TouchableOpacity style={{ flexDirection: 'row-reverse' }} onPress={() => {
+                                createNewCard(inputModal, typeCard);
+                            }}>
                                 <AntDesign name="check" size={35} color="white" />
                             </TouchableOpacity>
                         </Modal>
                     </Portal>
                 </View>
-                <Text>Fomulário da turma: {id}</Text>
                 <ScrollView>
-                    {/*Object.values(data).map((card, index) => {return})*/}
-                    <CardInfoForm title={data.card1[0]}
-                        onInputChange={handleInputChange1} onValueChange={handleCurrencyInputChange} type={data.card1[1]} key={0} />
-                    <CardInfoForm title={data.card2[0]}
-                        onInputChange={handleInputChange2} onValueChange={handleCurrencyInputChange} type={data.card2[1]} key={1} />
-                    <CardInfoForm title={data.card3[0]}
-                        onInputChange={handleInputChange3} onValueChange={handleCurrencyInputChange} type={data.card3[1]} key={2} />
-                    <CardInfoForm title={data.card4[0]}
-                        onInputChange={handleInputChange4} onValueChange={handleCurrencyInputChange} type={data.card4[1]} key={3} />
-                    <CardInfoForm title={data.card5[0]}
-                        onInputChange={handleInputChange1} onValueChange={handleCurrencyInputChange} type={data.card5[1]} key={4} />
-                    <Pressable onPress={() => {
-                        sendData(valorDoTextInput1, valorDoTextInput2, 
-                        valorDoTextInput3, valorDoTextInput4, valorDoCurrencyInput, geraRef(id))
-                    }}><Text>Enviar</Text></Pressable>
+                    {achouCampos ? inputs.map((item, index) => {
+                        return (
+                            <CardInfoForm title={item.title} value={item.value} isQtd={item.isQtd}
+                                onValueChange={handlerDataEachInput} id={index} key={index}
+                            />
+                        )
+                    })
+                        :
+                        <View>
+                            <Text className="text-center p-6">Nenhuma turma encontrada.</Text>
+                            <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={refresh}>
+                                <MaterialIcons name="refresh" size={48} color="white" />
+                                <Text className="color-white">Recarregar</Text>
+                            </Pressable>
+                        </View>
+                    }
+                    <Pressable
+                        style={({ pressed }) => [{ backgroundColor: pressed ? '#47A8BD' : '#152E45' },
+                        { alignSelf: 'center', padding: 20, borderRadius: 8 }]} onPress={() => {
+                        }}><Text style={{ color: 'white', }}>Enviar</Text></Pressable>
                 </ScrollView>
             </SafeAreaView>
         </PaperProvider>

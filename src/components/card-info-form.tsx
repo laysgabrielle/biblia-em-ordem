@@ -5,21 +5,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 interface Props {
     title: string;
-    type: string;
-    onInputChange: (texto: number) => void;
-    onValueChange: (number: number | null) => void;
+    isQtd: boolean;
+    value: number | null;
+    id: number;
+    onValueChange: (id: number, value: number | null) => void;
 }
 
-function CardInfoForm({title,type,onInputChange,onValueChange}: Props) {
-    function maskQtd(value: string) {
-        value = value.replace(/\D/g, '');
-        return value;
-    }
+function CardInfoForm({ title, isQtd, onValueChange, value, id }: Props) {
 
-    let typeValue = type;
 
-    const [state, setState] = useState<string>('0');
-    const [number, setNumber] = useState<number | null>();
     const [temPermissao, setPermissao] = useState(false);
 
     return (
@@ -43,33 +37,34 @@ function CardInfoForm({title,type,onInputChange,onValueChange}: Props) {
                 </Text>
             </View>
             <View>
-                <Text style={{ color: 'rgb(185, 193, 199)' }}>{typeValue}</Text>
+                <Text style={{ color: 'rgb(185, 193, 199)' }}>{isQtd ? "Qtd" : "R$"}</Text>
             </View>
             <View>
-                {typeValue === 'Qtd' ? (
-                    <TextInput className="border-b-2 border-white w-12"
+                {isQtd ? (
+                    <CurrencyInput className="border-b-2 border-white w-12"
                         style={{ color: 'rgb(185, 193, 199)', textAlign: 'center' }}
+                        value={value}
                         maxLength={3}
-                        keyboardType="numeric"
-                        value={state}
-                        onChangeText={(text) => {setState(maskQtd(text))
-                            onInputChange(parseInt(text))
+                        onChangeValue={(value) => {
+                            onValueChange(id,value)
                         }}
+                        delimiter=""
+                        separator=""
+                        precision={0}
+                        minValue={0}
+                        placeholder='0'
                         placeholderTextColor={'rgb(185, 193, 199)'}
                     />
                 ) : (
                     <CurrencyInput className="border-b-2 border-white w-12"
                         style={{ color: 'rgb(185, 193, 199)', textAlign: 'center' }}
-                        value={number || null}
+                        value={value}
                         maxLength={6}
                         onChangeValue={(value) => {
-                            setNumber(value)
-                            onValueChange(value)
+                            onValueChange(id,value)
                         }}
-                        delimiter="."
-                        separator=","
-                        precision={2}
                         minValue={0}
+                        placeholder='0'
                         placeholderTextColor={'rgb(185, 193, 199)'}
                     />
                 )}
