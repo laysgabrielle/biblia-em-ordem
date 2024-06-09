@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 import { RadioButton } from 'react-native-paper';
 import db from "../../../../../firebase/firebaseConfig";
@@ -20,6 +20,7 @@ const Drawer: React.FC<DrawerProps> = ({ onClose, onSelectFilter, onConfirm }) =
   const [turmas, setTurmas] = useState<Turma[]>([]);
   const [selectedTurma, setSelectedTurma] = useState<string | null>(null);
   const [loadingTurmas, setLoadingTurmas] = useState<boolean>(true);
+  const drawerAnim = useRef(new Animated.Value(-300)).current; // Initial value for drawer animation
 
   const EncontraDomingos = (): number[] => {
     const today = new Date();
@@ -40,6 +41,7 @@ const Drawer: React.FC<DrawerProps> = ({ onClose, onSelectFilter, onConfirm }) =
 
   const [domingos, setDomingos] = useState<number[]>([]);
   const [selectedDomingo, setSelectedDomingo] = useState<number | null>(null);
+  const [confirmButtonClicked, setConfirmButtonClicked] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchTurmas = async () => {
@@ -61,6 +63,14 @@ const Drawer: React.FC<DrawerProps> = ({ onClose, onSelectFilter, onConfirm }) =
 
     const domingosEncontrados = EncontraDomingos();
     setDomingos(domingosEncontrados);
+
+    // Animation to slide in the drawer
+    Animated.timing(drawerAnim, {
+      toValue: 0,
+      duration: 500,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: false,
+    }).start();
   }, []);
 
   const toggleTurma = (turma: string) => {
@@ -94,43 +104,55 @@ const Drawer: React.FC<DrawerProps> = ({ onClose, onSelectFilter, onConfirm }) =
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Turmas</Text>
-      {loadingTurmas ? (
-        <Text>Carregando...</Text>
-      ) : (
-        turmas.map((turma) => (
-          <TouchableOpacity key={turma.id} onPress={() => toggleTurma(turma.id)} style={styles.checkboxContainer}>
+    <Animated.View style={[styles.container, { transform: [{ translateX: drawerAnim }] }]}>
+      <View style={styles.filtersContainer}>
+        <Text style={[styles.title, { textAlign: 'center' }]}>Turmas</Text>
+        {loadingTurmas ? (
+          <Text style={styles.loadingText}>Carregando...</Text>
+        ) : (
+          turmas.map((turma) => (
+            <TouchableOpacity key={turma.id} onPress={() => toggleTurma(turma.id)} style={styles.checkboxContainer}>
+              <RadioButton.Android
+                value={turma.id}
+                status={selectedTurma === turma.id ? 'checked' : 'unchecked'}
+                onPress={() => toggleTurma(turma.id)}
+                color="#FFA500"
+              />
+              <Text style={[styles.filterOption, { textAlign: 'center' }]}>{turma.nome}</Text>
+            </TouchableOpacity>
+          ))
+        )}
+
+        <View style={styles.separator} />
+
+        <Text style={[styles.title, { textAlign: 'center' }]}>Domingos</Text>
+        {domingos.map((domingo) => (
+          <View key={domingo} style={styles.checkboxContainer}>
             <RadioButton.Android
-              value={turma.id}
-              status={selectedTurma === turma.id ? 'checked' : 'unchecked'}
-              onPress={() => toggleTurma(turma.id)}
+              value={domingo.toString()}
+              status={selectedDomingo === domingo ? 'checked' : 'unchecked'}
+              onPress={() => toggleDomingo(domingo)}
               color="#FFA500"
             />
-            <Text style={styles.filterOption}>{turma.nome}</Text>
-          </TouchableOpacity>
-        ))
-      )}
+            <TouchableOpacity onPress={() => toggleDomingo(domingo)}>
+              <Text style={[styles.filterOption, { textAlign: 'center' }]}>{domingo}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
 
-      <Text style={styles.title}>Domingos</Text>
-      {domingos.map((domingo) => (
-        <View key={domingo} style={styles.checkboxContainer}>
-          <RadioButton.Android
-            value={domingo.toString()}
-            status={selectedDomingo === domingo ? 'checked' : 'unchecked'}
-            onPress={() => toggleDomingo(domingo)}
-            color="#FFA500"
-          />
-          <TouchableOpacity onPress={() => toggleDomingo(domingo)}>
-            <Text style={styles.filterOption}>{domingo}</Text>
-          </TouchableOpacity>
-        </View>
-      ))}
-
-      <TouchableOpacity onPress={handleConfirm} style={styles.confirmButton}>
+      <TouchableOpacity
+        onPress={handleConfirm}
+        style={[
+          styles.confirmButton,
+          confirmButtonClicked && { backgroundColor: 'orange' }
+        ]}
+        onPressIn={() => setConfirmButtonClicked(true)}
+        onPressOut={() => setConfirmButtonClicked(false)}
+      >
         <MaterialIcons name="check" size={24} color="white" />
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -142,32 +164,60 @@ const styles = StyleSheet.create({
     zIndex: 1,
     position: 'absolute',
     left: 0,
-    top: 0,
-    width: '80%',
+    top: 40, // Adjust marginTop here
+    width: '75%',
     height: '100%',
-    marginTop: 30,
+    justifyContent: 'space-between', // Add this to space items evenly
+    shadowColor: "#000", // Shadow color
+    shadowOffset: {
+      width: 10, // Adjust horizontal shadow offset to move the shadow towards the right
+      height: 0, // Vertical shadow offset
+    },
+    shadowOpacity: 0.5, // Adjust shadow opacity to your liking
+    shadowRadius: 10, // Adjust shadow blur radius
+    elevation: 5, // Adjust elevation for Android shadow
+  },
+  filtersContainer: {
+    justifyContent: 'center', // Center filter options vertically
+    flexGrow: 1,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginBottom: 20,
-    color: 'white',
+    color: '#FFA500',
   },
   filterOption: {
     fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 1,
     color: 'white',
-    marginLeft: 10,
+  },
+  loadingText: {
+    color: 'white',
+    fontSize: 18,
+    marginBottom: 10,
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
   },
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'white',
+    marginVertical: 20,
+  },
   confirmButton: {
     alignSelf: 'center',
-    marginTop: 20,
+    marginTop: 0,
+    marginBottom: 30,
+    backgroundColor: '#FFA500',
+    padding: 10,
+    borderRadius: 30, // Tornar o botão redondo
+    width: 50, // Diminuir a largura do botão
+    height: 50, // Diminuir a altura do botão
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

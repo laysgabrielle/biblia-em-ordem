@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 import { RadioButton } from 'react-native-paper';
-import db from "../../../../../firebase/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
 
 interface DrawerProps {
   onClose: () => void;
@@ -11,96 +9,91 @@ interface DrawerProps {
   onConfirm: () => void;
 }
 
-interface Turma {
-  id: string;
-  nome: string;
-}
-
 const Drawer: React.FC<DrawerProps> = ({ onClose, onSelectFilter, onConfirm }) => {
-  const [selectedFilters, setSelectedFilters] = useState<{ [key: string]: boolean }>({
-    biblias: false,
-    retardatarios: false,
-    visitantes: false,
-    ofertas: false,
-    revistas: false,
-  });
+  const [selectedField, setSelectedField] = useState<string | null>(null);
+  const drawerAnim = useState(new Animated.Value(-300))[0]; // Valor inicial para a animação do drawer
 
-  const [loadingTurmas, setLoadingTurmas] = useState<boolean>(true);
-
-  const EncontraDomingos = (): number[] => {
+  const findSundays = (): number[] => {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
-    const numDays = new Date(year, month + 1, 0).getDate(); // Número de dias no mês atual
-    const domingos: number[] = [];
+    const numDays = new Date(year, month + 1, 0).getDate();
+    const sundays: number[] = [];
 
     for (let day = 1; day <= numDays; day++) {
       const date = new Date(year, month, day);
       if (date.getDay() === 0) {
-        domingos.push(day);
+        sundays.push(day);
       }
     }
 
-    return domingos;
+    return sundays;
   };
 
-  const [domingos, setDomingos] = useState<number[]>([]);
-  const [selectedDomingo, setSelectedDomingo] = useState<number | null>(null);
+  const [sundays, setSundays] = useState<number[]>([]);
+  const [selectedSunday, setSelectedSunday] = useState<number | null>(null);
 
   useEffect(() => {
-    const domingosEncontrados = EncontraDomingos();
-    setDomingos(domingosEncontrados);
+    const foundSundays = findSundays();
+    setSundays(foundSundays);
+
+    // Animação para deslizar o drawer
+    Animated.timing(drawerAnim, {
+      toValue: 0,
+      duration: 500,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: false,
+    }).start();
   }, []);
 
-  const toggleFilter = (filter: string) => {
-    setSelectedFilters({ ...selectedFilters, [filter]: !selectedFilters[filter] });
-  };
-
   const handleConfirm = () => {
-    const selectedFields = Object.keys(selectedFilters).filter((filter) => selectedFilters[filter]);
-    selectedFields.forEach((field) => {
-      onSelectFilter(true, field); // Passa 'true' para os campos selecionados
-    });
-    onSelectFilter(selectedDomingo, 'domingo');
+    onSelectFilter(selectedField, 'field');
+    onSelectFilter(selectedSunday, 'domingo');
     onConfirm();
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Campos</Text>
-      <View>
-        {Object.keys(selectedFilters).map((filter) => (
-          <TouchableOpacity key={filter} onPress={() => toggleFilter(filter)} style={styles.checkboxContainer}>
+    <Animated.View style={[styles.container, { transform: [{ translateX: drawerAnim }] }]}>
+      <View style={styles.filtersContainer}>
+        <Text style={styles.title}>Campos</Text>
+        <View>
+          {['biblias', 'retardatarios', 'visitantes', 'ofertas', 'revistas'].map((filter) => (
+            <View key={filter} style={styles.checkboxContainer}>
+              <RadioButton.Android
+                value={filter}
+                status={selectedField === filter ? 'checked' : 'unchecked'}
+                onPress={() => setSelectedField(filter)}
+                color="#FFA500"
+              />
+              <TouchableOpacity onPress={() => setSelectedField(filter)}>
+                <Text style={styles.filterOption}>{filter}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.separator} />
+
+        <Text style={styles.title}>Domingos</Text>
+        {sundays.map((sunday) => (
+          <View key={sunday} style={styles.checkboxContainer}>
             <RadioButton.Android
-              value={filter}
-              status={selectedFilters[filter] ? 'checked' : 'unchecked'}
-              onPress={() => toggleFilter(filter)}
-              color="#FFA500" // Definindo a cor do RadioButton como laranja
+              value={sunday.toString()}
+              status={selectedSunday === sunday ? 'checked' : 'unchecked'}
+              onPress={() => setSelectedSunday(sunday)}
+              color="#FFA500"
             />
-            <Text style={styles.filterOption}>{filter}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => setSelectedSunday(sunday)}>
+              <Text style={styles.filterOption}>{sunday}</Text>
+            </TouchableOpacity>
+          </View>
         ))}
       </View>
-
-      <Text style={styles.title}>Domingos</Text>
-      {domingos.map((domingo) => (
-        <View key={domingo} style={styles.checkboxContainer}>
-          <RadioButton.Android
-            value={domingo.toString()}
-            status={selectedDomingo === domingo ? 'checked' : 'unchecked'}
-            onPress={() => setSelectedDomingo(domingo)}
-            color="#FFA500" // Definindo a cor do RadioButton dos domingos como laranja
-          />
-          <TouchableOpacity onPress={() => setSelectedDomingo(domingo)}>
-            <Text style={styles.filterOption}>{domingo}</Text>
-          </TouchableOpacity>
-        </View>
-      ))}
 
       <TouchableOpacity onPress={handleConfirm} style={styles.confirmButton}>
         <MaterialIcons name="check" size={24} color="white" />
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -112,23 +105,39 @@ const styles = StyleSheet.create({
     zIndex: 1,
     position: 'absolute',
     left: 0,
-    top: 0,
-    width: '80%',
+    top: 40,
+    width: '75%',
     height: '100%',
-    marginTop: 30,
+    justifyContent: 'space-between',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 10,
+      height: 0,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  filtersContainer: {
+    flexGrow: 1,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginBottom: 20,
-    color: 'white', // Cor do título
+    color: '#FFA500',
+    textAlign: 'center',
   },
   filterOption: {
     fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 1,
     color: 'white',
     marginLeft: 10,
+  },
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#FFFF',
+    marginVertical: 20,
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -137,7 +146,14 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     alignSelf: 'center',
-    marginTop: 20,
+    marginBottom: 30,
+    backgroundColor: '#FFA500',
+    padding: 10,
+    borderRadius: 30,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
