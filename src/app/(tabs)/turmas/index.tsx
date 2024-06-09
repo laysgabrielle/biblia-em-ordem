@@ -4,52 +4,32 @@ import React, {useState, useEffect} from "react";
 import CardTurma from "../../../components/card-turma";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
-import db from "../../../../firebase/firebaseConfig";
+import {db} from "../../../../firebase/firebaseConfig.js";
 import { collection, deleteDoc, getDocs, query, doc, setDoc } from "firebase/firestore";
 import { FloatingAction } from "react-native-floating-action";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
 import MAdicionarTurma from "../../../components/m-adicionar-turma";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { getTurmas } from "../../../helpers/turmas";
 
 export default function Turmas(){
-    const [nomesTurmas, setNomesTurmas] = useState<string[]>([]);
-    const [achouTurmas, setAchouTurmas] = useState(true);
+
     const [modalAdicionarVisible, setModalAdicionarVisible] = useState(false);
     const [modalDeletarVisible, setModalDeletarVisible] = useState(false);
     const [modalEditarVisible, setModalEditarVisible] = useState(false);
 
 
-    const getTurmas = async () => {        
-        try{
-            console.log("Entrou na função getTurmas");
-            const turmas = collection(db, "turmas");
-            const q = query(turmas);
-            const querySnapshot = await getDocs(q);
-            let arrayHelperTurmas: string | React.SetStateAction<any[]> = [];
-            querySnapshot.forEach((doc) => {arrayHelperTurmas.push(doc.data().nome);
-            console.log("doc" + doc)});
-            setNomesTurmas(arrayHelperTurmas);
-            setAchouTurmas(arrayHelperTurmas.length > 0);
-            console.log("Nomes das turmas: " + arrayHelperTurmas);
-    } catch (e) {
-            console.log(e);
-    } finally {
-        if(nomesTurmas.length == 0){
-            setAchouTurmas(false);
-        } else {
-            setAchouTurmas(true);
-        }
-            
-    }
+    const [nomesTurmas, setNomesTurmas] = useState<string[]>([]);
+    const [achouTurmas, setAchouTurmas] = useState(true);
 
-    }
+    
     useEffect(() => {
-        getTurmas();
+        getTurmas(nomesTurmas, setNomesTurmas, achouTurmas, setAchouTurmas);
     }, []);
 
     const refresh = () => {
         if(nomesTurmas.length == 0)
-            getTurmas();
+            getTurmas(nomesTurmas, setNomesTurmas, achouTurmas, setAchouTurmas);
         else
             setAchouTurmas(true);
         
@@ -59,23 +39,30 @@ export default function Turmas(){
     const actions = [
         {
             text: "Adicionar Turma",
+            textStyle: {padding: 1, fontSize: 16, margin: 0,},
             icon: <MaterialIcons name="person-add" size={24} color="white" />,
             name: "bt_add_turma",
             position: 1,
             color: "#F7900B",
+            buttonSize: 42,
         },
         {
             text: "Deletar Turma",
+            textStyle: {padding: 1, fontSize: 16, margin: 0,},
             icon: <MaterialIcons name="delete-outline" size={24} color="white" />,
             name: "bt_deleta_turma",
             position: 2,
             color: "#F7900B",
-        },        {
+            buttonSize: 42,
+        },        
+        {
             text: "Editar Turma",
+            textStyle: {padding: 1, fontSize: 16, margin: 0,},
             icon: <MaterialIcons name="edit" size={24} color="white" />,
             name: "bt_edita_turma",
             position: 3,
             color: "#F7900B",
+            
         },
     ];
 
@@ -87,7 +74,7 @@ export default function Turmas(){
             await deleteDoc(turmaDocRef);
         });
         console.log("Turma deletada com sucesso");
-        getTurmas();
+        getTurmas(nomesTurmas, setNomesTurmas, achouTurmas, setAchouTurmas);
     }
 
     const handleCheckboxDelete = (id: string) => {
@@ -113,15 +100,13 @@ export default function Turmas(){
             nome: textoDoTextInput,        
         });
         console.log("Turma criada com sucesso");
-        getTurmas();
+        getTurmas(nomesTurmas, setNomesTurmas, achouTurmas, setAchouTurmas);
     }
 
     return (
         <PaperProvider>
-        <View className="flex-1 mx-4 mt-20">
-             <View className="mx-7 mt-16 mb-1 ">
-                <TextInput className="bg-blue-accent rounded-xl color-white p-3" placeholder="Search"/>           
-                </View> 
+        <View className="bg-gray-base flex flex-1">
+        <View className="flex-1 mx-4 mt-48 bg-gray-base">
            { achouTurmas ? <View className="flex-wrap flex-row justify-evenly items-center">   
               {Object.values(nomesTurmas).map((nomeTurma, index) => (
                 <Link className="m-3" key={index} href={{
@@ -181,10 +166,11 @@ export default function Turmas(){
                 left: 0,
                 bottom: 0,
             }}>
-                <FloatingAction actions={actions} onPressItem={name => 
+                <FloatingAction buttonSize={56} actions={actions} onPressItem={name => 
                     {if(name == "bt_add_turma"){setModalAdicionarVisible(true)} 
                     else if(name == "bt_deleta_turma"){setModalDeletarVisible(true)} }
                     } color="#152E45" distanceToEdge={{vertical: 30, horizontal:30}}/>
+            </View>
             </View>
         </PaperProvider>
     )

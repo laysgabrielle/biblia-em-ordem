@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 interface CardLicaoProps {
     title: string;
-    closeModal: () => void;  
+    closeModal: () => void;
+    initialTitle: string;
+    initialSubtitle: string;
+    handleUpdate: (newTitle: string, newSubtitle: string) => void;  
 }
 
-const ModalLicao: React.FC<CardLicaoProps> = (props) => {
-    const [inputText, setInputText] = useState<string>("");
-    const [modalVisible, setModalVisible] = useState(false);
+const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle, initialSubtitle, handleUpdate }) => {
+    const [inputTitle, setInputTitle] = useState<string>(initialTitle);
+    const [inputSubtitle, setInputSubtitle] = useState<string>(initialSubtitle);
+
+    useEffect(() => {
+        setInputTitle(initialTitle);
+        setInputSubtitle(initialSubtitle);
+    }, [initialTitle, initialSubtitle]);
 
 
     return (
@@ -21,12 +29,12 @@ const ModalLicao: React.FC<CardLicaoProps> = (props) => {
             padding: 8,
             margin: 0,
         }}>
-            <TouchableOpacity onPress={props.closeModal}>
+            <TouchableOpacity onPress={closeModal}>
             <MaterialIcons name="arrow-back" size={20} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 8 }}/>
             </TouchableOpacity>
             <View style={{ alignItems: 'center' }}>
                 <Text style={{ color: "white", fontSize: 18, fontWeight: 'italic', marginBottom: 2 }}>
-                    {props.title}
+                    {title}
                 </Text>
             </View>
 
@@ -46,8 +54,8 @@ const ModalLicao: React.FC<CardLicaoProps> = (props) => {
             <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Titulo</Text>
                 <TextInput
                     placeholder="..."
-                    onChangeText={(text) => setInputText(text)}
-                    value={inputText}
+                    onChangeText={(text) => setInputTitle(text)}
+                    value={inputTitle}
                     style={{
                         width: '80%',
                         height: 40,
@@ -63,8 +71,8 @@ const ModalLicao: React.FC<CardLicaoProps> = (props) => {
             <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22}}>Descrição</Text>
                 <TextInput
                     placeholder="Descrição..."
-                    onChangeText={(text) => setInputText(text)}
-                    value={inputText}
+                    onChangeText={(text) => setInputSubtitle(text)}
+                    value={inputSubtitle}
                     style={{
                         width: '80%',
                         height: 40,
@@ -75,7 +83,7 @@ const ModalLicao: React.FC<CardLicaoProps> = (props) => {
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={props.closeModal}>
+            <TouchableOpacity onPress={() => handleUpdate(inputTitle, inputSubtitle)}>
                 <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 210, marginTop: 5 }} />
             </TouchableOpacity>
         </View>
@@ -83,3 +91,4 @@ const ModalLicao: React.FC<CardLicaoProps> = (props) => {
 }
 
 export default ModalLicao;
+

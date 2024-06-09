@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
 import { Modal, Portal, PaperProvider } from 'react-native-paper';
-import db from "../../../../firebase/firebaseConfig";
+import {db} from "../../../../firebase/firebaseConfig";
 import { collection, addDoc, getDocs, query, where, doc, DocumentReference, deleteDoc, Timestamp } from "firebase/firestore";
 import { MaterialIcons } from "@expo/vector-icons";
 import CardInfoForm from '../../../components/card-info-form';
@@ -13,7 +13,6 @@ import Checkbox from '../../../components/checkbox-form';
 
 export default function id() {
     //Início das variáveis de estado
-    const [temPermissao, setPermissao] = useState(false);
 
     const [achouCampos, setAchouCampos] = useState(true);
 
@@ -40,6 +39,16 @@ export default function id() {
     //Fim das variáveis de estado
 
     const { id } = useLocalSearchParams() // recebe o nome do doc turma como id
+    const geraRef = (id: string | undefined | string[]) => {
+        if (typeof id === 'string') {
+            const ref = doc(db, "turmas", id);
+            return ref;
+        }
+        else {
+            console.log("O id não recebeu uma string")
+        }
+    }
+
     const router = useRouter(); // para usar o método dismiss()
 
     const geraInput = (isQtd: boolean, title: string) => {
@@ -112,9 +121,9 @@ export default function id() {
             if (input.value !== undefined && input.value !== null) {
                 let title = input.title;
                 data[title] = input.value;
-
             }
         });
+        data["turma_referente"] = geraRef(id);
         data["dia_letivo"] = Timestamp.now();
     
         await addDoc(collection(db, "dados_obtained"), data);
@@ -183,7 +192,7 @@ export default function id() {
 
     return (
         <PaperProvider>
-            <SafeAreaView className="flex-grow items-center justify-center mt-14">
+            <SafeAreaView className="flex-col items-center justify-center mt-14 bg-gray-base">
                 <View className="flex-row items-center justify-between" style={{ width: 342 }}>
                     <View>
                         <TouchableOpacity onPress={() => router.dismiss()}>

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import CardTurma from "../../../components/card-turma";
 import "../../../styles/global.css";
 import { MaterialIcons } from "@expo/vector-icons";
-import db from "../../../../firebase/firebaseConfig";
+import {db} from "../../../../firebase/firebaseConfig.js";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
 
@@ -53,37 +53,30 @@ export default function Formulario() {
 
     }
     return (
-
-        <View className="mx-4 mt-20">
-            <View className="mx-7 mt-16 mb-1 ">
-                <TextInput className="bg-blue-accent rounded-xl color-white p-3" placeholder="Search" />
-            </View>
-            {achouTurmas ? <View className="flex-wrap flex-row justify-evenly items-center">
-                {Object.values(nomesTurmas).map((nomeTurma, index) => (
-                    <Link className="m-3" key={index} href={{
-                        pathname: "/formulario/[id]",
-                        params: { id: nomeTurma }
-                    }} onPress={() =>
-                        console.log(nomeTurma)
-                    }
-                    //   options={{headerShown: false,}}
-                    >
-                        <CardTurma deletar={() => console.log("qa")} temPermissao={true} nomeTurma={nomeTurma} icone="book" />
-                    </Link>
-                ))}
-            </View>
-                :
-                <View>
-                    <Text className="text-center p-6">Nenhuma turma encontrada.</Text>
-                    <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={refresh}>
-                        <MaterialIcons name="refresh" size={48} color="white" />
-                        <Text className="color-white">Recarregar</Text>
-
-
-                    </Pressable>
+        <View className="bg-gray-base flex flex-1">
+            <View className="flex-1 mx-4 mt-48 bg-gray-base">
+                {achouTurmas ? <View className="flex-wrap flex-row justify-evenly items-center">
+                    {Object.values(nomesTurmas).map((nomeTurma, index) => (
+                        <Link className="m-3" key={index} href={{
+                            pathname: "/formulario/[id]",
+                            params: { id: nomeTurma }
+                        }} onPress={() => { console.log(nomeTurma) }}
+                        //   options={{headerShown: false,}}
+                        >
+                            <CardTurma deletar={() => console.log("qa")} temPermissao={true} nomeTurma={nomeTurma} icone="book" />
+                        </Link>
+                    ))}
                 </View>
-            }
-
+                    :
+                    <View>
+                        <Text className="text-center p-6">Nenhuma turma encontrada.</Text>
+                        <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={refresh}>
+                            <MaterialIcons name="refresh" size={48} color="white" />
+                            <Text className="color-white">Recarregar</Text>
+                        </Pressable>
+                    </View>
+                }
+            </View>
         </View>
     )
 }

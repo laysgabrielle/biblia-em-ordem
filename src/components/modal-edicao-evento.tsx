@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Image, TextInput, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 interface CardModalProps {
     title: string;
     closeModal: () => void;
-    addCard: (title: string, location: string, info: string) => void;
+    initialTitle: string;
+    initialLocation: string;
+    initialInfo: string;
+    handleUpdate: (newTitle: string, newLocation: string, newInfo: string) => void;
 }
 
-const ModalEventos: React.FC<CardModalProps> = ({ title, closeModal, addCard }) => {
-    const [eventotitle, setEventoTitle] = useState<string>("");
+const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle, initialLocation,initialInfo, handleUpdate }) => {
+    const [inputText, setInputText] = useState<string>("");
+    const [modalVisible, setModalVisible] = useState(false);
+    const [title, setTitle] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [info, setInfo] = useState<string>("");
+
+    useEffect(() => {
+        setTitle(initialTitle);
+        setLocation(initialLocation);
+        setInfo(initialInfo);
+    }, [initialTitle, initialLocation, initialInfo]);
     return (
         <View style={{
             width: 275,
@@ -46,8 +57,8 @@ const ModalEventos: React.FC<CardModalProps> = ({ title, closeModal, addCard }) 
             <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Evento</Text>
                 <TextInput
                     placeholder="Encontro..."
-                    onChangeText={(text) => setEventoTitle(text)}
-                    value={eventotitle}
+                    onChangeText={(text) => setTitle(text)}
+                    value={title}
                     style={{
                         width: '80%',
                         height: 40,
@@ -92,7 +103,7 @@ const ModalEventos: React.FC<CardModalProps> = ({ title, closeModal, addCard }) 
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={() => addCard(eventotitle,location, info)}>
+            <TouchableOpacity onPress={() =>{handleUpdate(title, location, info) }}>
                 <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 230, marginTop: 5 }} />
             </TouchableOpacity>
 
@@ -100,4 +111,4 @@ const ModalEventos: React.FC<CardModalProps> = ({ title, closeModal, addCard }) 
     )
 }
 
-export default ModalEventos;
+export default ModalEdicaoEventos;
