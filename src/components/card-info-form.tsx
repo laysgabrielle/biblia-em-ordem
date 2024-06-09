@@ -8,45 +8,67 @@ interface Props {
     isQtd: boolean;
     value: number | null;
     id: number;
+    idDoc: string;
     onValueChange: (id: number, value: number | null) => void;
+    onDelete: (id: string) => void;
 }
 
-function CardInfoForm({ title, isQtd, onValueChange, value, id }: Props) {
+function CardInfoForm({ title, isQtd, onValueChange, value, id, onDelete , idDoc }: Props) {
 
 
     const [temPermissao, setPermissao] = useState(false);
 
     return (
-        <View className="flex-row rounded-md items-center p-6 justify-between m-2 shadow-x1 shadow-black"
+        <View className="shadow-x1 shadow-black"
             style={{
                 width: 342,
                 height: 110,
                 backgroundColor: 'rgb(21, 46, 69)',
                 flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                borderRadius: 6,
+                padding: 20,
+                margin: 6,
+
             }}
         >
-            <View>
-                <Text className="border-t-2 border-white pt-2 mb-12 font-bold text-xl"
+            <View style={{
+                flexDirection: 'column',
+                width: 167,
+                height: 90,
+                justifyContent:'space-around'
+            }}>
+                <Text className="border-t-2 border-white pt-2 font-bold text-xl"
                     style={{
                         color: 'rgb(185, 193, 199)',
-                        width: 167
+                        width: 167,
+                        height: 30,
                     }}>
                     {title}
                 </Text>
+                <Pressable disabled={temPermissao} style={{
+                    height: 30,
+                    width: 50,
+                }} onPress={()=>onDelete(idDoc)}>
+                    <MaterialIcons name="delete-outline" size={23} color="orange" style={{
+                        color: temPermissao ? 'orange' : 'gray',
+                    }} />
+                </Pressable>
             </View>
             <View>
-                <Text style={{ color: 'rgb(185, 193, 199)' }}>{isQtd ? "Qtd" : "R$"}</Text>
+                <Text style={{
+                    color: 'rgb(185, 193, 199)',
+                }}>{isQtd ? "Qtd" : "R$"}</Text>
             </View>
             <View>
                 {isQtd ? (
                     <CurrencyInput className="border-b-2 border-white w-12"
-                        style={{ color: 'rgb(185, 193, 199)', textAlign: 'center' }}
+                        style={{ color: 'rgb(185, 193, 199)', textAlign: 'center'}}
                         value={value}
                         maxLength={3}
                         onChangeValue={(value) => {
-                            onValueChange(id,value)
+                            onValueChange(id, value)
                         }}
                         delimiter=""
                         separator=""
@@ -61,7 +83,7 @@ function CardInfoForm({ title, isQtd, onValueChange, value, id }: Props) {
                         value={value}
                         maxLength={6}
                         onChangeValue={(value) => {
-                            onValueChange(id,value)
+                            onValueChange(id, value)
                         }}
                         minValue={0}
                         placeholder='0'
@@ -69,16 +91,6 @@ function CardInfoForm({ title, isQtd, onValueChange, value, id }: Props) {
                     />
                 )}
             </View>
-            <Pressable disabled={temPermissao} style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 95,
-            }}>
-                <MaterialIcons name="delete-outline" size={23} color="orange" className="p-5" style={{
-                    color: temPermissao ? 'orange' : 'gray',
-                }} />
-            </Pressable>
         </View>
     );
 }
