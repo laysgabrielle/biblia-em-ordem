@@ -5,68 +5,52 @@ import { View, Text, Pressable } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { FloatingAction } from "react-native-floating-action";
 
-import db from "../../../../firebase/firebaseConfig";
-import { collection, getDocs, query, where, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import db from "../../../../firebase/firebaseConfig.js";
+import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, deleteDoc, setDoc, addDoc, getDoc } from "firebase/firestore";
+import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
+import { Modal, PaperProvider, Portal } from "react-native-paper";
+import MAdicionarAluno from "../../../components/m-adicionar-aluno";
 
-//#region Funções de apoio para o mês atual e os domingos
-const MesAtual = EncontraMesAtual();
 
-function EncontraMesAtual() {
-    switch (new Date().getMonth()) {
-        case 0:
-            return "Janeiro";
-        case 1:
-            return "Fevereiro";
-        case 2:
-            return "Março";
-        case 3:
-            return "Abril";
-        case 4:
-            return "Maio";
-        case 5:
-            return "Junho";
-        case 6:
-            return "Julho";
-        case 7:
-            return "Agosto";
-        case 8:
-            return "Setembro";
-        case 9:
-            return "Outubro";
-        case 10:
-            return "Novembro";
-        case 11:
-            return "Dezembro";
-        default:
-            return "Mês inválido";
+const actions = [
+    {
+        text: "Adicionar Aluno",
+        textStyle: {padding: 1, fontSize: 16, margin: 0,},
+        icon: <MaterialIcons name="person-add" size={24} color="white" />,
+        name: "bt_add_aluno",
+        position: 2,
+        color: "#F7900B",
+        buttonSize: 42,
+    },
+    {
+        text: "Salvar frequência",
+        textStyle: {padding: 1, fontSize: 16, margin: 0,},
+        icon: <MaterialIcons name="save" size={24} color="white" />,
+        name: "bt_salvar_frequencia",
+        position: 1,
+        color: "#F7900B",
+        buttonSize: 42,
+    },
+    {
+        text: "Editar alunos",
+        textStyle: {padding: 1, fontSize: 16, margin: 0,},
+        icon: <MaterialIcons name="edit" size={24} color="white" />,
+        name: "bt_editar_aluno",
+        position: 3,
+        color: "#F7900B",
+        buttonSize: 42,
     }
-}
-
-const Hoje = new Date().getDate();
-const Domingos = EncontraDomingos();
+];
 
 
 
-function daysInMonth(month: number, year: number) {
-    return new Date(year, month, 0).getDate();
-}
 
-function EncontraDomingos() {
-    var Mes = new Date();
-    var getTotalDias = daysInMonth(Mes.getMonth(), Mes.getFullYear());
-    var arrayDomingos = new Array();
+//#region Funções de apoio para a chamada de alunos
 
-    for (var i = 1; i <= getTotalDias; i++) {
-        var newDate = new Date(Mes.getFullYear(), Mes.getMonth(), i)
-        if (newDate.getDay() == 0) {
-            arrayDomingos.push(i);
-        }
-    }
-
-    return arrayDomingos;
-}
 //#endregion
+
 
 
 export default function id() {
@@ -77,29 +61,29 @@ export default function id() {
     /**
      * Concatena o nome da turma com a string "turma" para obter a referência da turma no BD.
     */
-   useEffect(() => {
-        const turmaDocRef = doc(db, "turmas", "turma"+nomeTurma);
-        console.log("Isso consulta " + turmaDocRef);
-        /**
-         * Busca conforme a referência de turma passada.
-         */
-        const q = query(collection(db, "alunos"), where("turma_associada", "==", turmaDocRef));
-        console.log("Isso consulta " + q);
-        /**
-         * Mapeia os alunos no array 'dados'.
-         */
-        const fetchDataAlunos = async () => {
-            try {
-                const querySnapshot = await getDocs(q);
-                const dataVz = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setDados(dataVz);
-                console.log("Logando " + dataVz);
-            }
-            catch (e) {
-                console.log(e);
-            }
-        };
+   const turmaDocRef = doc(db, "turmas", "turma"+nomeTurma);
+   console.log("Isso consulta " + turmaDocRef);
+   /**
+    * Busca conforme a referência de turma passada.
+    */
+   const q = query(collection(db, "alunos"), where("turma_associada", "==", turmaDocRef));
+   console.log("Isso consulta " + q);
+   /**
+    * Mapeia os alunos no array 'dados'.
+    */
+   const fetchDataAlunos = async () => {
+       try {
+           const querySnapshot = await getDocs(q);
+           const dataVz = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+           setDados(dataVz);
+           console.log("Logando " + dataVz);
+       }
+       catch (e) {
+           console.log(e);
+       }
+   };
 
+   useEffect(() => {
         fetchDataAlunos();
     }, []);
     //#endregion
@@ -124,17 +108,67 @@ export default function id() {
      * Função que seta as faltas no banco de dados.
      */
     //TODO: Evitar registros duplicados.
-    const setarFaltas = () => {
+    const salvaFrequencia = () => {
         console.log("Setar faltas pressed");
         faltasDoDia.forEach(async element => {
             const alunoDocRef = doc(db, "alunos", element.toString());
-            await updateDoc(alunoDocRef, { faltas: arrayUnion(new Date()) })
+            await updateDoc(alunoDocRef, { faltas: arrayUnion(new Date()) }), 
+            console.log("Falta registrada"),
+            setCheckboxEnabled(false);
     })
-}
+    }
+    const [modalEditarAluno, setModalEditarAluno] = useState(false);
+    const [getIdAluno, setIdAluno] = useState<string>("");
 
+    const handleEditarAluno = (id_aluno: string) => {
+        setModalEditarAluno(true);
+        setIdAluno(id_aluno);
+    }
+
+    const [checkboxEnabled, setCheckboxEnabled] = useState(true);
+    const [editandoAluno, setEditandoAluno] = useState(false);
+    const modoEditarAluno = () => {
+        setEditandoAluno(!editandoAluno);
+    }
+
+    const deletarAluno = (id: string) => {
+        const alunoDocRef = doc(db, "alunos", id);
+        deleteDoc(alunoDocRef);
+        fetchDataAlunos();
+    }
+
+    const [textNomeAluno, setTextNomeAluno] = useState('');
+    const [textDataNascimento, setTextDataNascimento] = useState(new Date());
+    const [modalAdicionarAluno, setModalAdicionarAluno] = useState(false);
+    const salvaTextNomeAluno = (nomeAluno: string) => {
+        setTextNomeAluno(nomeAluno);
+    }    
+    const salvaTextDataAluno = ( dataNascimento: Date) => {
+        setTextDataNascimento(dataNascimento);
+    }
+    const salvaAluno = async () => {
+        await addDoc(collection(db, "alunos"), {
+            nome: textNomeAluno,
+            dataNascimento: textDataNascimento,   
+            faltas: [],
+            turma_associada: turmaDocRef     
+        });
+        fetchDataAlunos();
+    }
+
+    const salvaEditAluno = async () => {
+        
+        await updateDoc(doc(db, "alunos", getIdAluno?.toString()), {
+            nome: textNomeAluno,
+            dataNascimento: textDataNascimento,     
+        });
+        fetchDataAlunos();
+    }
 
     return (
-        <View>
+        <PaperProvider>
+        <View className="flex-1 bg-gray-base">
+
             {/* TODO: Refatorar como componente */}
             <View className="justify-center items-center bg-blue-accent m-12 mb-0 rounded-lg ">
                 <Text className="color-white pt-3 p-0 mb-3">{MesAtual.toUpperCase()}</Text>
@@ -156,18 +190,67 @@ export default function id() {
             <View className="justify-center items-center ">
                 <View className="flex-row justify-between items-baseline">
                     <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toString().toLocaleUpperCase()}</Text>
-                    <Pressable onPress={setarFaltas} className="pl-6">
-                        <Text>AQUI</Text>
-                    </Pressable>
                 </View>
                 <ScrollView>
                     {
                         dados.map(dado => (
-                            <AlunoChamada nomeAluno={dado.nome} key={dado.id} estaMarcado={estaMarcado} onPress={() => handleCheckbox(dado.id)} />
+                            <AlunoChamada 
+                                deleteAluno={() => deletarAluno(dado.id)} 
+                                modoEditar={editandoAluno} 
+                                editarAluno={() => handleEditarAluno(dado.id)}
+                                checkboxEnabled={checkboxEnabled} 
+                                nomeAluno={dado.nome} 
+                                key={dado.id} 
+                                estaMarcado={estaMarcado} 
+                                onPress={() => handleCheckbox(dado.id)} />
                         ))
                     }
                 </ScrollView>
             </View>
+            <View style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0,
+            }}>
+                
+                <FloatingAction 
+                buttonSize={56}
+                color="#152E45"
+                distanceToEdge={{vertical: 30, horizontal:30}}
+                actions={actions}
+                onPressItem={name => {
+                    switch (name) {
+                        case "bt_add_aluno":
+                            setModalAdicionarAluno(true);
+                            break;
+                        case "bt_salvar_frequencia":
+                            salvaFrequencia();
+                            break;
+                        case "bt_editar_aluno":
+                            modoEditarAluno();
+                            break;
+                        default:
+                            break;
+                    }
+                }}/>
+            </View>
         </View>
+        <Portal>
+            <Modal visible={modalAdicionarAluno} onDismiss={() => setModalAdicionarAluno(false)}>
+                <View className="bg-blue-dark bg-opacity-95 rounded-xl p-2 shadow-lg m-16 shadow-black drop-shadow-md justify-center items-center" style={{width: 285}}>
+                    <MAdicionarAluno  onInputDataNascimentoChange={salvaTextDataAluno} onInputNomeChange={salvaTextNomeAluno} salvarAluno={salvaAluno}/>
+                </View>
+                </Modal>
+        </Portal>
+        <Portal>
+            <Modal visible={modalEditarAluno} onDismiss={() => setModalEditarAluno(false)}>
+                <View className="bg-blue-dark bg-opacity-95 rounded-xl p-2 shadow-lg m-16 shadow-black drop-shadow-md justify-center items-center" style={{width: 285}}>
+                    <MAdicionarAluno onInputDataNascimentoChange={salvaTextDataAluno} onInputNomeChange={salvaTextNomeAluno} salvarAluno={() => salvaEditAluno()}/>
+                </View>
+                </Modal>
+        </Portal>
+        </PaperProvider>
     )
 }
