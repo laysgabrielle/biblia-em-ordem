@@ -4,7 +4,7 @@ import React, {useState, useEffect} from "react";
 import CardTurma from "../../../components/card-turma";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
-import db from "../../../../firebase/firebaseConfig";
+import db from "../../../../firebase/firebaseConfig.js";
 import { collection, deleteDoc, getDocs, query, doc, setDoc } from "firebase/firestore";
 import { FloatingAction } from "react-native-floating-action";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
