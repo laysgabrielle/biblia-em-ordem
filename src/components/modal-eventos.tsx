@@ -32,7 +32,7 @@ const ModalEventos: React.FC<CardModalProps> = ({ title, closeModal, addCard }) 
 
             <View style={{ alignItems: 'center', padding:15 }}>
                 <Image
-                    source={require("../../assets/images/feed.jpg")}
+                    source={require("../../assets/images/eventos.jpg")}
                     style={{
                         resizeMode: 'contain',
                         width: 200,
@@ -43,7 +43,7 @@ const ModalEventos: React.FC<CardModalProps> = ({ title, closeModal, addCard }) 
             </View>
             <MaterialIcons name="edit" size={20} color="white" style={{ marginLeft: 125,position:'absolute',marginTop:95 }}/>
             <View style={{ marginBottom: 8 }}>
-            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Evento</Text>
+            <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic',marginLeft: 22 }}>Evento</Text>
                 <TextInput
                     placeholder="Encontro..."
                     onChangeText={(text) => setEventoTitle(text)}
@@ -60,7 +60,7 @@ const ModalEventos: React.FC<CardModalProps> = ({ title, closeModal, addCard }) 
             </View>
 
             <View style={{ marginBottom: 8 }}>
-            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Local</Text>
+            <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic',marginLeft: 22 }}>Local</Text>
                 <TextInput
                     placeholder="Igreja..."
                     onChangeText={(text) => setLocation(text)}
@@ -77,7 +77,7 @@ const ModalEventos: React.FC<CardModalProps> = ({ title, closeModal, addCard }) 
             </View>
 
             <View style={{ marginBottom: 8 }}>
-                <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Informações</Text>
+                <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic', marginLeft: 22 }}>Informações</Text>
                 <TextInput
                     placeholder="Informações..."
                     onChangeText={(text) => setInfo(text)}
