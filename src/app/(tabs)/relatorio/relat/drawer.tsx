@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 import { RadioButton } from 'react-native-paper';
-import db from "../../../../../firebase/firebaseConfig";
+import { db, auth } from "../../../../../firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
 interface DrawerProps {

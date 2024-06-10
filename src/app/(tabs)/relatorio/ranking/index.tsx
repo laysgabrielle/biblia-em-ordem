@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'r
 import { MaterialIcons } from "@expo/vector-icons";
 import Drawer from './drawer';
 import { BarChart } from 'react-native-gifted-charts';
-import db from "../../../../../firebase/firebaseConfig";
+import { db, auth } from "../../../../../firebase/firebaseConfig";
 import { collection, getDocs, query, where, doc, Timestamp } from "firebase/firestore";
 
 interface MainScreenProps {
@@ -41,7 +41,7 @@ const MainScreen: React.FC<MainScreenProps> = () => {
         setIsDrawerOpen(false);
     };
 
-    const handleFilterSelect = (selectedFilter: string | null, filterType: string) => {
+    const handleFilterSelect = (selectedFilter: string | null | number, filterType: string) => {
         if (filterType === 'domingo') {
             if (typeof selectedFilter === 'number') {
                 setSelectedDomingo(new Date(new Date().getFullYear(), new Date().getMonth(), selectedFilter));
@@ -49,7 +49,7 @@ const MainScreen: React.FC<MainScreenProps> = () => {
                 setSelectedDomingo(null);
             }
         } else if (filterType === 'field') {
-            setSelectedField(selectedFilter);
+            setSelectedField(selectedFilter as string);
         }
     };
 
@@ -129,12 +129,12 @@ const MainScreen: React.FC<MainScreenProps> = () => {
                             frontColor: "#FFA500",
                         }))}
                         barWidth={70}
-                        barSpacing={50}
+                        spacing={50} // Corrigido para 'spacing' em vez de 'barSpacing'
                         width={300}
                         height={300}
                         yAxisLabelTexts={[]}
-                        xAxisLabelTexts={dadosObtained.map(item => item.label)}
-                        onPressBar={handleBarPress}
+                        xAxisLabelTexts={dadosObtained.map(item => item.nome)} // Corrigido para 'item.nome' em vez de 'item.label'
+                        onPress={handleBarPress}
                     />
                 ) : (
                     <View style={styles.emptyChartContainer}>

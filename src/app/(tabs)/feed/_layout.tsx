@@ -1,10 +1,12 @@
-// layout.tsx
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View } from "react-native";
+import { Tabs } from "expo-router";
 import CardFeed from "../../../components/card-feed";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const HomeScreen: React.FC = () => {
+export default function TabLayout() {
+    const [activeTab, setActiveTab] = useState("index");
+
     return (
         <View style={{ flex: 1, flexDirection: "column" }}>
             <View>

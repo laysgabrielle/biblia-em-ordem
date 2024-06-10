@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, Image } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 import Drawer from './drawer'; // Importe o componente Drawer
-import db from "../../../../../firebase/firebaseConfig";
+import { db, auth } from "../../../../../firebase/firebaseConfig";
 import { collection, getDocs, query, where, doc, Timestamp, getDoc } from "firebase/firestore";
 
 const MainScreen = () => {

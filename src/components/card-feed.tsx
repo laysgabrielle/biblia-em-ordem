@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, TouchableOpacity } from 'react-native';
+import { Modal, TouchableOpacity, View, Text, Image } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 import { Link } from 'expo-router';
-import { Text, View, Image } from 'react-native';
 import ModalLicao from './moda-licao';
 
 interface Props {
@@ -29,7 +28,7 @@ const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
     return (
         <View style={{
             borderRadius: 10,
-            alignItems: "top",
+            alignItems: "flex-start", // Alterado de "top" para "flex-start"
             padding: 0,
             justifyContent: "space-between",
             margin: 0,
@@ -112,4 +111,5 @@ const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
         </View>
     );
 }
+
 export default CardFeed;
