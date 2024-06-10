@@ -33,7 +33,7 @@ const ModalRecados: React.FC<CardRecadosProps> = ({ title, closeModal, addCard }
 
             <View style={{ alignItems: 'center', padding:10, }}>
                 <Image
-                    source={require("../../assets/images/feed.jpg")}
+                    source={require("../../assets/images/licao.jpeg")}
                     style={{
                         resizeMode: 'cover',
                         width: 100,
@@ -44,7 +44,7 @@ const ModalRecados: React.FC<CardRecadosProps> = ({ title, closeModal, addCard }
             </View>
             <MaterialIcons name="edit" size={20} color="white" style={{ marginLeft: 120,position:'absolute',marginTop:90 }}/>
             <View style={{ marginBottom: 8 }}>
-            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Titulo</Text>
+            <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic', marginLeft: 22 }}>Titulo</Text>
                 <TextInput
                     placeholder="..."
                     onChangeText={(text) => setRecadoTitle(text)}
@@ -61,7 +61,7 @@ const ModalRecados: React.FC<CardRecadosProps> = ({ title, closeModal, addCard }
             </View>
 
             <View style={{ marginBottom: 8 }}>
-            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Local</Text>
+            <Text style={{ color: "white", fontSize: 14,fontStyle: 'italic',marginLeft: 22 }}>Local</Text>
                 <TextInput
                     placeholder="Igreja..."
                     onChangeText={(text) => setLocation(text)}
@@ -78,7 +78,7 @@ const ModalRecados: React.FC<CardRecadosProps> = ({ title, closeModal, addCard }
             </View>
 
             <View style={{ marginBottom: 10 }}>
-                <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Descrição</Text>
+                <Text style={{ color: "white", fontSize: 14,fontStyle: 'italic', marginLeft: 22 }}>Descrição</Text>
                 <TextInput
                     placeholder="Descrição..."
                     onChangeText={(text) => setInfo(text)}
