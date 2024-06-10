@@ -11,6 +11,7 @@ interface Evento {
   title: string;
   location: string;
   info: string;
+  image: string | null;
 }
 
 export default function Home() {
@@ -31,16 +32,17 @@ export default function Home() {
     setModalVisible(false);
   };
 
-  const addCard = async (title: string, location: string, info: string) => {
+  const addCard = async (title: string, location: string, info: string, image: string | null) => {
     if (title && location && info) {
       try {
         const docRef = await addDoc(collection(db, "eventos"), {
           title,
           location,
-          info
+          info,
+          image
         });
         console.log("Document written with ID: ", docRef.id);
-        setCards([...cards, { id: docRef.id, title, location, info }]);
+        setCards([...cards, { id: docRef.id, title, location, info ,image}]);
         closeModal();
       } catch (e) {
         console.error("Error adding document: ", e);
@@ -80,6 +82,7 @@ export default function Home() {
             title={card.title}
             location={card.location}
             info={card.info}
+            image={card.image}
             deleteCard={deleteCard}
           />
         ))}

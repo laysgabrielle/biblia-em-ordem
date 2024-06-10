@@ -9,24 +9,27 @@ interface Props {
   title: string;
   location: string;
   info: string;
+  image: string | null;
   deleteCard: (id: string) => void;
 }
 
-const CardEvento: React.FC<Props> = ({ id, title, location, info, deleteCard }) => {
+const CardEvento: React.FC<Props> = ({ id, title, location, info,image, deleteCard }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [eventTitle, setEventTitle] = useState(title);
   const [eventLocation, setEventLocation] = useState(location);
   const [eventInfo, setEventInfo] = useState(info);
+  const [eventImage, setEventImage] = useState(image);
 
   const closeModal = () => {
     setModalVisible(false);
   }
 
-  const handleUpdate = (newTitle: string, newLocation: string, newInfo: string) => {
+  const handleUpdate = (newTitle: string, newLocation: string, newInfo: string, newImage: string | null) => {
     setEventTitle(newTitle);
     setEventLocation(newLocation);
     setEventInfo(newInfo);
+    setEventImage(newImage);
     closeModal();
   }
 
@@ -53,7 +56,7 @@ const CardEvento: React.FC<Props> = ({ id, title, location, info, deleteCard }) 
         }}
       >
         <Image
-          source={require("../../assets/images/eventos.jpg")}
+          source={eventImage ? { uri: eventImage } : require("../../assets/images/eventos.jpg")}
           style={{
             width: "100%",
             height: showDetails ? 140 : 100,
@@ -119,6 +122,7 @@ const CardEvento: React.FC<Props> = ({ id, title, location, info, deleteCard }) 
                 initialTitle={eventTitle}
                 initialLocation={eventLocation}
                 initialInfo={eventInfo}
+                initialImage={eventImage}
                 handleUpdate={handleUpdate} />
             </View>
           </View>

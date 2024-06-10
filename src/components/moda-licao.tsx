@@ -8,18 +8,20 @@ interface CardLicaoProps {
     closeModal: () => void;
     initialTitle: string;
     initialSubtitle: string;
-    handleUpdate: (newTitle: string, newSubtitle: string) => void;  
+    initialImage: string | null;
+    handleUpdate: (newTitle: string, newImage: string, newSubtitle: string) => void;  
 }
 
-const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle, initialSubtitle, handleUpdate }) => {
+const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,initialImage, initialSubtitle, handleUpdate }) => {
     const [inputTitle, setInputTitle] = useState<string>(initialTitle);
     const [inputSubtitle, setInputSubtitle] = useState<string>(initialSubtitle);
-    const [imageE, setImageE] = useState<string | null>(null);
+    const [imageL, setImageL] = useState<string | null>(null);
 
     useEffect(() => {
         setInputTitle(initialTitle);
         setInputSubtitle(initialSubtitle);
-    }, [initialTitle, initialSubtitle]);
+        setImageL(initialImage);
+    }, [initialTitle, initialSubtitle,initialImage]);
 
     const pickImage = async () => {
         if (Platform.OS !== 'web') {
@@ -40,7 +42,7 @@ const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,
         console.log(result);
     
         if (!result.canceled && result.assets && result.assets.length > 0) {
-          setImageE(result.assets[0].uri);
+          setImageL(result.assets[0].uri);
         }
       };
 
@@ -64,7 +66,7 @@ const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,
             <TouchableOpacity onPress={pickImage}>
             <View style={{ alignItems: 'center', padding: 10 }}>
                 <Image
-                    source={imageE ? { uri: imageE } : require("../../assets/images/feed.jpg")}
+                    source={imageL ? { uri: imageL } : require("../../assets/images/feed.jpg")}
                     style={{
                         resizeMode: 'cover',
                         width: 180,
@@ -108,7 +110,7 @@ const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={() => handleUpdate(inputTitle, inputSubtitle)}>
+            <TouchableOpacity onPress={() => handleUpdate(inputTitle, inputSubtitle, imageL ?? "")}>
                 <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 210, marginTop: 5 }} />
             </TouchableOpacity>
         </View>
