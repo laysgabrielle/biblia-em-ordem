@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, Image, TextInput, TouchableOpacity,Alert, Platform } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from 'expo-image-picker';
 
 interface CardModalProps {
     title: string;
@@ -9,6 +10,7 @@ interface CardModalProps {
     initialLocation: string;
     initialInfo: string;
     handleUpdate: (newTitle: string, newLocation: string, newInfo: string) => void;
+    
 }
 
 const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle, initialLocation,initialInfo, handleUpdate }) => {
@@ -17,12 +19,40 @@ const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle
     const [title, setTitle] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [info, setInfo] = useState<string>("");
+    const [imageE, setImageE] = useState<string | null>(null);
+
+    
 
     useEffect(() => {
         setTitle(initialTitle);
         setLocation(initialLocation);
         setInfo(initialInfo);
     }, [initialTitle, initialLocation, initialInfo]);
+
+
+    const pickImage = async () => {
+        if (Platform.OS !== 'web') {
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (status !== 'granted') {
+            alert('Desculpe, precisamos da permissão para acessar a galeria!');
+            return;
+          }
+        }
+    
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+    
+        console.log(result);
+    
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+          setImageE(result.assets[0].uri);
+        }
+      };
+
     return (
         <View style={{
             width: 275,
@@ -40,21 +70,22 @@ const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle
                     {title}
                 </Text>
             </View>
-
+            <TouchableOpacity onPress={pickImage}>
             <View style={{ alignItems: 'center', padding:15 }}>
                 <Image
-                    source={require("../../assets/images/feed.jpg")}
+                    source={imageE ? { uri: imageE } : require("../../assets/images/eventos.jpg")}
                     style={{
-                        resizeMode: 'contain',
+                        resizeMode: 'cover',
                         width: 200,
                         height: 100,
                         borderRadius: 30,
                     }}
                 />
             </View>
-            <MaterialIcons name="edit" size={20} color="white" style={{ marginLeft: 125,position:'absolute',marginTop:95 }}/>
+            <MaterialIcons name="edit" size={20} color="white" style={{ marginLeft: 125,position:'absolute',marginTop:55 }}/>
+            </TouchableOpacity>
             <View style={{ marginBottom: 8 }}>
-            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Evento</Text>
+            <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic',marginLeft: 22 }}>Evento</Text>
                 <TextInput
                     placeholder="Encontro..."
                     onChangeText={(text) => setTitle(text)}
@@ -71,7 +102,7 @@ const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle
             </View>
 
             <View style={{ marginBottom: 8 }}>
-            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Local</Text>
+            <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic',marginLeft: 22 }}>Local</Text>
                 <TextInput
                     placeholder="Igreja..."
                     onChangeText={(text) => setLocation(text)}
@@ -88,7 +119,7 @@ const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle
             </View>
 
             <View style={{ marginBottom: 8 }}>
-                <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Informações</Text>
+                <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic', marginLeft: 22 }}>Informações</Text>
                 <TextInput
                     placeholder="Informações..."
                     onChangeText={(text) => setInfo(text)}

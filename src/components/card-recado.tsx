@@ -117,7 +117,7 @@ const CardRecado: React.FC<props> = ({id, title, location, info, deleteCard }) =
                             shadowRadius: 1,
                             elevation: 5,
                         }}>
-                            <ModalEdicaoRecados title="Editar Lição" 
+                            <ModalEdicaoRecados title="Editar Recado" 
                             closeModal={closeModal}
                             initialTitle={eventTitle} 
                             initialLocation={eventLocation} 

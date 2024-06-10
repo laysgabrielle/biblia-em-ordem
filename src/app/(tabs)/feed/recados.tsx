@@ -6,7 +6,7 @@ import CardRecado from "../../../components/card-recado";
 import ModalRecados from "../../../components/modal-recados";
 import ModalLicao from "../../../components/moda-licao";
 import { collection, addDoc, getDocs, deleteDoc, doc  } from 'firebase/firestore';
-import db from "../../../../firebase/firebaseConfig";
+import {db} from "../../../../firebase/firebaseConfig";
 
 interface Recado {
   id: string;
@@ -114,7 +114,7 @@ const deleteCard = async (id: string) => {
                             shadowRadius: 1,
                             elevation: 5,
                         }}>
-                            <ModalRecados title="Editar Lição" closeModal={closeModal} addCard={addCard}  />
+                            <ModalRecados title="Adicionar Recado" closeModal={closeModal} addCard={addCard}  />
                         </View>
                     </View>
                 </Modal>
