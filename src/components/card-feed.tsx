@@ -29,7 +29,6 @@ const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
     return (
         <View style={{
             borderRadius: 10,
-            alignItems: "top",
             padding: 0,
             justifyContent: "space-between",
             margin: 0,

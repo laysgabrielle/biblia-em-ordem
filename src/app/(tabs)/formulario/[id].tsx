@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
 import { Modal, Portal, PaperProvider } from 'react-native-paper';
-import {db} from "../../../../firebase/firebaseConfig";
+import { db } from "../../../../firebase/firebaseConfig";
 import { collection, addDoc, getDocs, query, where, doc, DocumentReference, deleteDoc, Timestamp } from "firebase/firestore";
 import { MaterialIcons } from "@expo/vector-icons";
 import CardInfoForm from '../../../components/card-info-form';
@@ -75,11 +75,12 @@ export default function id() {
             let arrayHelperCampos: React.SetStateAction<any[]> = [];
             querySnapshot.forEach((doc) => {
 
-                arrayHelperCampos.push({title: doc.data().title, idDoc: doc.id,
+                arrayHelperCampos.push({
+                    title: doc.data().title, idDoc: doc.id,
                     value: doc.data().value, isQtd: doc.data().isQtd
                 });
                 console.log("doc " + doc.data().title);
-                console.log("docRef: "+doc.id);
+                console.log("docRef: " + doc.id);
 
 
             });
@@ -125,7 +126,7 @@ export default function id() {
         });
         data["turma_referente"] = geraRef(id);
         data["dia_letivo"] = Timestamp.now();
-    
+
         await addDoc(collection(db, "dados_obtained"), data);
         console.log("Criou novo doc");
     };
@@ -177,99 +178,103 @@ export default function id() {
     };
 
     const deleteCard = (idDoc: string) => {
-        const camposRef = collection(db,'campos_form');
+        const camposRef = collection(db, 'campos_form');
         const docRef = doc(camposRef, idDoc);
 
         deleteDoc(docRef).then(() => {
             console.log('Documento deletado com sucesso!');
-          }).catch((error) => {
+        }).catch((error) => {
             console.error('Erro ao deletar documento:', error);
-          });
-          setCardsCriados((number) => number - 1);
+        });
+        setCardsCriados((number) => number - 1);
     }
 
 
 
     return (
-        <PaperProvider>
-            <SafeAreaView className="flex-col items-center justify-center mt-14 bg-gray-base">
-                <View className="flex-row items-center justify-between" style={{ width: 342 }}>
-                    <View>
-                        <TouchableOpacity onPress={() => router.dismiss()}>
-                            <AntDesign name="arrowleft" size={35} color="#152E45" />
-                        </TouchableOpacity>
-                    </View>
-                    <View>
-                        <TouchableOpacity onPress={() => setVisibleModal(true)}>
-                            <Ionicons name="add-circle-outline" size={35} color="#152E45" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View>
-                    <Portal>
-                        <Modal visible={visibleModal}
-                            contentContainerStyle={styles.containerModal}
-                            dismissable={false}
-                        >
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <View style={{}}>
-                                    <TouchableOpacity onPress={() => setVisibleModal(false)}>
-                                        <AntDesign name="arrowleft" size={35} color="white" />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={{}}>
-                                    <Text style={[styles.textModal, { fontSize: 15 }]}>Novo Cartão</Text>
-                                </View>
-                                <View style={{ width: 35 }}></View>
-                            </View>
-                            <View style={{ padding: 15, }}>
-                                <Text style={styles.textModal}>Categoria:</Text>
-                                <TextInput cursorColor='black'
-                                    style={[{ marginBottom: 5 }, styles.modalInput]}
-                                    value={inputModal}
-                                    onChangeText={(text) => setInputModal(text)}
-                                ></TextInput>
-                                <Text style={styles.textModal}>Tipo:</Text>
-                                <Checkbox options={optionsType} onChange={(op) => setTypeCard(op)} />
-                            </View>
-                            <TouchableOpacity style={{ flexDirection: 'row-reverse' }} onPress={() => {
-                                createNewCard(inputModal, typeCard);
-                            }}>
-                                <AntDesign name="check" size={35} color="white" />
+        <View className="bg-gray-base flex flex-1">
+            <PaperProvider>
+                <SafeAreaView className="flex-col items-center justify-center mt-14 ">
+                    <View className="flex-row items-center justify-between" style={{ width: 342 }}>
+                        <View>
+                            <TouchableOpacity onPress={() => router.dismiss()}>
+                                <AntDesign name="arrowleft" size={35} color="#152E45" />
                             </TouchableOpacity>
-                        </Modal>
-                    </Portal>
-                </View>
-                <View style={{ height: '95%' }}>
-                    <ScrollView>
-                        {achouCampos ? inputs.map((item, index) => {
-                            return (
-                                <CardInfoForm title={item.title} value={item.value} isQtd={item.isQtd}
-                                    onValueChange={handlerDataEachInput} id={index} key={index}
-                                    idDoc={item.idDoc} onDelete={deleteCard}
-                                />
-                            )
-                        })
-                            :
-                            <View>
-                                <Text className="text-center p-6">Nenhuma turma encontrada.</Text>
-                                <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={refresh}>
-                                    <MaterialIcons name="refresh" size={48} color="white" />
-                                    <Text className="color-white">Recarregar</Text>
-                                </Pressable>
-                            </View>
-                        }
-                        <Pressable
-                        style={({ pressed }) => [{ backgroundColor: pressed ? '#F7900B' : '#152E45' },
-                        { alignSelf: 'center', padding: 20, borderRadius: 8 }]} onPress={() => {
-                            sendData()
-                        }}>
-                            <Text style={{ color: 'white', }}>Enviar</Text>
-                        </Pressable>
-                    </ScrollView>
-                </View>
-            </SafeAreaView>
-        </PaperProvider>
+                        </View>
+                        <View>
+                            <Pressable
+                                style={({ pressed }) => [{ backgroundColor: pressed ? '#F7900B' : '#152E45' },
+                                { alignSelf: 'center', padding: 20, borderRadius: 8, marginTop: 10 }]} onPress={() => {
+                                    sendData()
+                                }}>
+                                <Text style={{ color: 'white', }}>Enviar</Text>
+                            </Pressable>
+                        </View>
+                        <View>
+                            <TouchableOpacity onPress={() => setVisibleModal(true)}>
+                                <Ionicons name="add-circle-outline" size={35} color="#152E45" />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View>
+                        <Portal>
+                            <Modal visible={visibleModal}
+                                contentContainerStyle={styles.containerModal}
+                                dismissable={false}
+                            >
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <View style={{}}>
+                                        <TouchableOpacity onPress={() => setVisibleModal(false)}>
+                                            <AntDesign name="arrowleft" size={35} color="white" />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={{}}>
+                                        <Text style={[styles.textModal, { fontSize: 15 }]}>Novo Cartão</Text>
+                                    </View>
+                                    <View style={{ width: 35 }}></View>
+                                </View>
+                                <View style={{ padding: 15, }}>
+                                    <Text style={styles.textModal}>Categoria:</Text>
+                                    <TextInput cursorColor='black'
+                                        style={[{ marginBottom: 5 }, styles.modalInput]}
+                                        value={inputModal}
+                                        onChangeText={(text) => setInputModal(text)}
+                                    ></TextInput>
+                                    <Text style={styles.textModal}>Tipo:</Text>
+                                    <Checkbox options={optionsType} onChange={(op) => setTypeCard(op)} />
+                                </View>
+                                <TouchableOpacity style={{ flexDirection: 'row-reverse' }} onPress={() => {
+                                    createNewCard(inputModal, typeCard);
+                                }}>
+                                    <AntDesign name="check" size={35} color="white" />
+                                </TouchableOpacity>
+                            </Modal>
+                        </Portal>
+                    </View>
+                    <View style={{ height: '95%' }}>
+                        <ScrollView>
+                            {achouCampos ? inputs.map((item, index) => {
+                                return (
+                                    <CardInfoForm title={item.title} value={item.value} isQtd={item.isQtd}
+                                        onValueChange={handlerDataEachInput} id={index} key={index}
+                                        idDoc={item.idDoc} onDelete={deleteCard}
+                                    />
+                                )
+                            })
+                                :
+                                <View>
+                                    <Text className="text-center p-6">Nenhuma turma encontrada.</Text>
+                                    <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={refresh}>
+                                        <MaterialIcons name="refresh" size={48} color="white" />
+                                        <Text className="color-white">Recarregar</Text>
+                                    </Pressable>
+                                </View>
+                            }
+                        </ScrollView>
+                    </View>
+                </SafeAreaView>
+            </PaperProvider>
+        </View>
     )
 }
 
