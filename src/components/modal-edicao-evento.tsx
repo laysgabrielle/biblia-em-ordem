@@ -9,11 +9,12 @@ interface CardModalProps {
     initialTitle: string;
     initialLocation: string;
     initialInfo: string;
-    handleUpdate: (newTitle: string, newLocation: string, newInfo: string) => void;
+    initialImage: string | null;
+    handleUpdate: (newTitle: string, newLocation: string, newImage: string, newInfo: string) => void;
     
 }
 
-const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle, initialLocation,initialInfo, handleUpdate }) => {
+const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle, initialLocation,initialImage,initialInfo, handleUpdate }) => {
     const [inputText, setInputText] = useState<string>("");
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState<string>("");
@@ -27,7 +28,8 @@ const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle
         setTitle(initialTitle);
         setLocation(initialLocation);
         setInfo(initialInfo);
-    }, [initialTitle, initialLocation, initialInfo]);
+        setImageE(initialImage);
+    }, [initialTitle, initialLocation, initialInfo,initialImage]);
 
 
     const pickImage = async () => {
@@ -134,7 +136,7 @@ const ModalEdicaoEventos: React.FC<CardModalProps> = ({ closeModal, initialTitle
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={() =>{handleUpdate(title, location, info) }}>
+            <TouchableOpacity onPress={() =>{handleUpdate(title, location, info,imageE ?? "") }}>
                 <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 230, marginTop: 5 }} />
             </TouchableOpacity>
 

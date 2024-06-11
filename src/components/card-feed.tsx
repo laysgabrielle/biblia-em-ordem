@@ -8,21 +8,24 @@ import ModalLicao from './moda-licao';
 interface Props {
     title: string;
     subtitle: string;
+    image: string | null;
 }
 
-const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
+const CardFeed: React.FC<Props> = ({ title,image, subtitle }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [activeLink, setActiveLink] = useState<string | null>(null);
     const [cardTitle, setCardTitle] = useState(title);
     const [cardSubtitle, setCardSubtitle] = useState(subtitle);
+    const [eventImage, setEventImage] = useState(image);
 
     const closeModal = () => {
         setModalVisible(false);
     }
 
-    const handleUpdate = (newTitle: string, newSubtitle: string) => {
+    const handleUpdate = (newTitle: string ,newSubtitle: string,newImage: string | null) => {
         setCardTitle(newTitle);
         setCardSubtitle(newSubtitle);
+        setEventImage(newImage);
         closeModal();
     }
 
@@ -45,7 +48,7 @@ const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
             height: 250,
         }}>
             <Image
-                source={require("../../assets/images/feed.jpg")}
+                source={eventImage ? { uri: eventImage } :require("../../assets/images/feed.jpg")}
                 style={{
                     resizeMode: 'cover',
                     width: '100%',
@@ -103,6 +106,7 @@ const CardFeed: React.FC<Props> = ({ title, subtitle }) => {
                                 closeModal={closeModal} 
                                 initialTitle={cardTitle} 
                                 initialSubtitle={cardSubtitle} 
+                                initialImage={eventImage}
                                 handleUpdate={handleUpdate} />
                         </View>
                     </View>
