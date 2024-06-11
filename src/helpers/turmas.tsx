@@ -2,7 +2,12 @@ import React, {useState, useEffect} from "react";
 import { collection, getDocs, query } from "firebase/firestore";
 import {db}  from "../../firebase/firebaseConfig.js";
 
-export const getTurmas = async (nomesTurmas: string[], setNomesTurmas: React.Dispatch<React.SetStateAction<string[]>>, achouTurmas: boolean, setAchouTurmas: React.Dispatch<React.SetStateAction<boolean>>) => {        
+export const getTurmas = async (
+    nomesTurmas: string[], 
+    setNomesTurmas: React.Dispatch<React.SetStateAction<string[]>>, 
+    setAchouTurmas: React.Dispatch<React.SetStateAction<boolean>>,
+    setEstaCarregando:React.Dispatch<React.SetStateAction<boolean>>) => {    
+    setEstaCarregando(true);    
     try{
         console.log("Entrou na função getTurmas");
         const turmas = collection(db, "turmas");
@@ -22,6 +27,6 @@ export const getTurmas = async (nomesTurmas: string[], setNomesTurmas: React.Dis
     } else {
         setAchouTurmas(true);
     }
-        
+    setEstaCarregando(false);    
 }
 }
