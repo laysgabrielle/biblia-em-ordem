@@ -30,7 +30,7 @@ export default function Login() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <Image source={require("../../assets/images/Blidem.png")} style={styles.image} />
+                <Image source={require('../../assets/images/blidem.png')}style={styles.image}/>
                 <TextInput
                     style={styles.input}
                     placeholder="Login"
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     image: {
-        width: 200,
-        height: 200,
+        width: 350,
+        height: 300,
         marginBottom: 24,
     },
     input: {
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         borderRadius: 4,
         backgroundColor: "orange",
+        fontWeight: 'bold'
     },
     button: {
         paddingVertical: 12,
