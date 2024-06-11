@@ -35,43 +35,41 @@ export default function TabLayout() {
                 </View>
             </View>
             <View style={{ flex: 1 }}>
-                <Tabs
-                    screenOptions={{
-                    headerShown: false,
-                    tabBarStyle: {
-                        backgroundColor: "#c6c6c6",
-                        borderTopWidth: 0,
-                        minHeight: 1,
-                    },
-                    tabBarItemStyle: {
-                        paddingBottom: 5,
-                        paddingTop: 1,
-                    },
-                    tabBarActiveTintColor: "#c6c6c6",
-                    tabBarInactiveTintColor: "#c6c6c6",
-                    tabBarLabelStyle: {
-                        fontSize: 1, 
-                    },
-                }}>
-                    <Tabs.Screen
-                        listeners={{
-                            tabPress: () => setActiveTab('index')
-                        }}
-                        name="index"
-                        options={{
-                            title: 'Eventos'
-                        }}
-                    />
-                    <Tabs.Screen
-                        listeners={{
-                            tabPress: () => setActiveTab('recados')
-                        }}
-                        name="recados"
-                        options={{
-                            title: 'Recados'
-                        }}
-                    />
-                </Tabs>
+            <Tabs
+    screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+            backgroundColor:  "#c6c6c6", 
+            borderTopWidth: 0, 
+            minHeight: 0, 
+            elevation: 0, 
+        },
+        tabBarActiveTintColor:  "#c6c6c6", 
+        tabBarInactiveTintColor:  "#c6c6c6", 
+        tabBarLabelStyle: {
+            fontSize: 0,
+        },
+    }}
+>
+    <Tabs.Screen
+        listeners={{
+            tabPress: () => setActiveTab('index')
+        }}
+        name="index"
+        options={{
+            title: 'Eventos'
+        }}
+    />
+    <Tabs.Screen
+        listeners={{
+            tabPress: () => setActiveTab('recados')
+        }}
+        name="recados"
+        options={{
+            title: 'Recados'
+        }}
+    />
+</Tabs>
             </View>
         </View>
     )

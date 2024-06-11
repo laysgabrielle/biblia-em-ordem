@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import { Text, View, Image } from "react-native";
 import ModalEdicaoEventos from './modal-edicao-evento';
 
@@ -65,10 +65,10 @@ const CardEvento: React.FC<Props> = ({ id, title, location, info,image, deleteCa
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', position: 'absolute', paddingHorizontal: 10, marginTop: 10 }}>
           <TouchableOpacity onPress={() => deleteCard(id)}>
-            <MaterialIcons name="delete" size={20} color="orange" />
+            <MaterialIcons name="delete-outline" size={20} color="orange" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <MaterialIcons name="edit" size={20} color="orange" />
+            <Feather name="edit-2" size={20} color="orange" />
           </TouchableOpacity>
         </View>
         <View
