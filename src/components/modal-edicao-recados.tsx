@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, Image, TextInput, TouchableOpacity, Platform } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 
 interface CardRecadosProps {
@@ -61,10 +61,10 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
             margin: 2,
         }}>
             <TouchableOpacity onPress={closeModal}>
-            <MaterialIcons name="arrow-back" size={20} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 5 }}/>
+            <MaterialIcons name="arrow-back" size={22} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 5 }}/>
             </TouchableOpacity>
             <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: "white", fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
+                <Text style={{ color: "white", fontSize: 20, fontStyle: 'italic', marginBottom: 8 }}>
                     {title}
                 </Text>
             </View>
@@ -80,7 +80,7 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
                     }}
                 />
             </View>
-            <MaterialIcons name="edit" size={20} color="white" style={{ marginLeft: 120,position:'absolute',marginTop:50 }}/>
+            <Feather name="edit-2" size={25} color="white" style={{ marginLeft: 115,position:'absolute',marginTop:50 }}/>
             </TouchableOpacity>
             <View style={{ marginBottom: 8 }}>
             <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic', marginLeft: 22 }}>Titulo</Text>
@@ -134,7 +134,7 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
                 />
             </View>
             <TouchableOpacity onPress={() =>{handleUpdate(title, location, info, imageR ?? "")}}>
-                <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 220, marginTop: 0 }} />
+                <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 222, marginTop: -4 }} />
             </TouchableOpacity>
 
         </View>

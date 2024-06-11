@@ -3,6 +3,7 @@ import { View, ScrollView, Modal, TouchableOpacity } from "react-native";
 import CardEvento from "../../../components/card-evento";
 import ModalEventos from "../../../components/modal-eventos";
 import { MaterialIcons } from "@expo/vector-icons";
+import AntDesign from '@expo/vector-icons/AntDesign';
 import {db} from "../../../../firebase/firebaseConfig";
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
@@ -72,19 +73,21 @@ export default function Home() {
       }}
     >
       <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <MaterialIcons name="add" size={28} style={{ marginLeft: 355, margin: 5 }} />
+        <AntDesign name="pluscircleo" size={28} color= "#152E45" style={{ marginLeft: 355, margin: 5,paddingTop:15 }} />   
       </TouchableOpacity>
       <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
         {cards.map((card) => (
-          <CardEvento
-            key={card.id}
-            id={card.id}
-            title={card.title}
-            location={card.location}
-            info={card.info}
-            image={card.image}
-            deleteCard={deleteCard}
-          />
+          <View key={card.id} style={{ marginBottom: 20 }}>
+            <CardEvento
+              key={card.id}
+              id={card.id}
+              title={card.title}
+              location={card.location}
+              info={card.info}
+              image={card.image}
+              deleteCard={deleteCard}
+            />
+          </View>
         ))}
       </ScrollView>
       <Modal
