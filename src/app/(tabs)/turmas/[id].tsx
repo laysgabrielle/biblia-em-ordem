@@ -7,7 +7,7 @@ import { ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FloatingAction } from "react-native-floating-action";
 
-import db from "../../../../firebase/firebaseConfig.js";
+import {db} from "../../../../firebase/firebaseConfig.js";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, deleteDoc, setDoc, addDoc, getDoc } from "firebase/firestore";
 import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
 import { Modal, PaperProvider, Portal } from "react-native-paper";

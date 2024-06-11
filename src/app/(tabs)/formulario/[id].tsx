@@ -263,7 +263,7 @@ export default function id() {
                             })
                                 :
                                 <View>
-                                    <Text className="text-center p-6">Nenhuma turma encontrada.</Text>
+                                    <Text className="text-center p-6">Nenhum campo encontrado.</Text>
                                     <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={refresh}>
                                         <MaterialIcons name="refresh" size={48} color="white" />
                                         <Text className="color-white">Recarregar</Text>
