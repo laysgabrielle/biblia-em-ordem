@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, ScrollView, Modal, TouchableOpacity } from "react-native";
+import { View, Dimensions, Modal, TouchableOpacity, ScrollView } from "react-native";
 import CardEvento from "../../../components/card-evento";
 import ModalEventos from "../../../components/modal-eventos";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -30,6 +30,15 @@ export default function Home() {
 
   const closeModal = () => {
     setModalVisible(false);
+  }
+  const deleteCard = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "eventos", id));
+      setCards(cards.filter(card => card.id !== id));
+      console.log("Document deleted with ID: ", id);
+    } catch (e) {
+      console.error("Error deleting document: ", e);
+    }
   };
 
   const addCard = async (title: string, location: string, info: string, image: string | null) => {
@@ -51,17 +60,6 @@ export default function Home() {
       alert("All fields are required!");
     }
   };
-
-  const deleteCard = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, "eventos", id));
-      setCards(cards.filter(card => card.id !== id));
-      console.log("Document deleted with ID: ", id);
-    } catch (e) {
-      console.error("Error deleting document: ", e);
-    }
-  };
-
   return (
     <View
       style={{
@@ -116,7 +114,7 @@ export default function Home() {
             shadowRadius: 1,
             elevation: 5,
           }}>
-            <ModalEventos title="Adicionar Evento" closeModal={closeModal} addCard={addCard} />
+            <ModalEventos title="Editar Lição" closeModal={closeModal} addCard={addCard} />
           </View>
         </View>
       </Modal>
