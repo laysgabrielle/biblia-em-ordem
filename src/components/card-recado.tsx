@@ -5,26 +5,31 @@ import { Modal, TouchableOpacity  } from 'react-native';
 import ModalEdicaoRecados from "./modal-edicao-recados";
 
 interface props {
-    title: string,
-    location: string,
-    info: string,
+    id: string;
+    title: string;
+    location: string;
+    info: string;
+    image: string | null;
+    deleteCard: (id: string) => void;
 }
 
-const CardRecado: React.FC<props> = ({ title, location, info }) => {
+const CardRecado: React.FC<props> = ({id, title, location,image, info, deleteCard }) => {
     const [showDetails, setShowDetails] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [eventTitle, setEventTitle] = useState(title);
     const [eventLocation, setEventLocation] = useState(location);
     const [eventInfo, setEventInfo] = useState(info);
+    const [eventImage, setEventImage] = useState(image);
 
     const closeModal = () => {
         setModalVisible(false);
     }
 
-    const handleUpdate = (newTitle: string, newLocation: string, newInfo: string) => {
+    const handleUpdate = (newTitle: string, newLocation: string, newInfo: string,newImage: string | null) => {
         setEventTitle(newTitle);
         setEventLocation(newLocation);
         setEventInfo(newInfo);
+        setEventImage(newImage);
         closeModal();
     }
 
@@ -53,13 +58,15 @@ const CardRecado: React.FC<props> = ({ title, location, info }) => {
                 }}
             >
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 10}}>
-                <MaterialIcons name="delete" size={20} color="orange"/>
+                <TouchableOpacity onPress={() => deleteCard(id)}>
+                    <MaterialIcons name="delete" size={20} color="orange"/>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <MaterialIcons name="edit" size={20} color="orange" />
+                    <MaterialIcons name="edit" size={20} color="orange" />
                 </TouchableOpacity>
                 </View>
                 <Image
-                    source={require("../../assets/images/recados.jpeg")} // Caminho da imagem
+                   source={eventImage ? { uri: eventImage } : require("../../assets/images/licao.jpeg")} // Caminho da imagem
                     style={{
                         width: showDetails ? 105 : 100,
                         height: showDetails ? 105 : 100, // Altura da imagem conforme o estado
@@ -113,11 +120,12 @@ const CardRecado: React.FC<props> = ({ title, location, info }) => {
                             shadowRadius: 1,
                             elevation: 5,
                         }}>
-                            <ModalEdicaoRecados title="Editar Lição" 
+                            <ModalEdicaoRecados title="Editar Recado" 
                             closeModal={closeModal}
                             initialTitle={eventTitle} 
                             initialLocation={eventLocation} 
                             initialInfo={eventInfo} 
+                            initialImage={eventImage}
                             handleUpdate={handleUpdate} />
                         </View>
                     </View>

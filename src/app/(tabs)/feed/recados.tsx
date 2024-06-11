@@ -1,27 +1,68 @@
-import React , { useState } from "react";
+import React , { useState, useEffect} from "react";
 import { View, Modal,ScrollView, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import CardEvento from "../../../components/card-evento";
 import CardRecado from "../../../components/card-recado";
 import ModalRecados from "../../../components/modal-recados";
 import ModalLicao from "../../../components/moda-licao";
+import { collection, addDoc, getDocs, deleteDoc, doc  } from 'firebase/firestore';
+import {db} from "../../../../firebase/firebaseConfig";
+
+interface Recado {
+  id: string;
+  title: string;
+  location: string;
+  info: string;
+  image: string | null;
+}
 
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [cards, setCards] = useState([
-    {
-      title:"Recados sobre a ultima aula",
-      location: "Igreja Assembléia de Deus",
-      info: "Venha para nosso encontro de jovens! O evento será realizado com o objetivo de reunir nossos jovens para uma confraternização.",
-    }    
-  ])
-  const closeModal = () => {
+  const [cards, setCards] = useState<Recado[]>([]);
+
+    const fetchRecados = async () => {
+        const querySnapshot = await getDocs(collection(db, "recados"));
+        const fetchedRecados = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Recado[];
+        setCards(fetchedRecados);
+    };
+
+    useEffect(() => {
+        fetchRecados();
+    }, []);
+
+const closeModal = () => {
     setModalVisible(false);
-}
-const addCard = (title, location, info) => {
-  setCards([...cards, { title, location, info }]);
-  closeModal();
-}
+};
+
+const addCard = async (title: string, location: string, info: string, image: string | null) => {
+  if (title && location && info) {
+    try {
+      const docRef = await addDoc(collection(db, "recados"), {
+        title,
+        location,
+        info,
+        image
+      });
+      console.log("Document written with ID: ", docRef.id);
+      setCards([...cards, { id: docRef.id, title, location, info, image }]);
+      closeModal();
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  } else {
+    alert("All fields are required!");
+  }
+};
+
+const deleteCard = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, "recados", id));
+    setCards(cards.filter(card => card.id !== id));
+    console.log("Document deleted with ID: ", id);
+  } catch (e) {
+    console.error("Error deleting document: ", e);
+  }
+};
   return (
     <View
       style={{
@@ -38,9 +79,12 @@ const addCard = (title, location, info) => {
       {cards.map((card, recados) => (
         <CardRecado
           key={recados}
+          id={card.id}
           title={card.title}
           location={card.location}
           info={card.info}
+          image={card.image}
+          deleteCard={deleteCard}
         />
       ))} 
       </ScrollView>
@@ -73,7 +117,7 @@ const addCard = (title, location, info) => {
                             shadowRadius: 1,
                             elevation: 5,
                         }}>
-                            <ModalRecados title="Editar Lição" closeModal={closeModal} addCard={addCard}  />
+                            <ModalRecados title="Adicionar Recado" closeModal={closeModal} addCard={addCard}  />
                         </View>
                     </View>
                 </Modal>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, Image, TextInput, TouchableOpacity, Platform } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from 'expo-image-picker';
 
 interface CardRecadosProps {
     title: string;
@@ -8,21 +9,47 @@ interface CardRecadosProps {
     initialTitle: string;
     initialLocation: string;
     initialInfo: string;
-    handleUpdate: (newTitle: string, newLocation: string, newInfo: string) => void;
+    initialImage: string | null;
+    handleUpdate: (newTitle: string, newLocation: string, newImage: string, newInfo: string) => void;
 }
 
-const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTitle, initialLocation,initialInfo, handleUpdate}) => {
+const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTitle,initialImage, initialLocation,initialInfo, handleUpdate}) => {
     const [inputText, setInputText] = useState<string>("");
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [info, setInfo] = useState<string>("");
+    const [imageR, setImageR] = useState<string | null>(null);
 
     useEffect(() => {
         setTitle(initialTitle);
         setLocation(initialLocation);
         setInfo(initialInfo);
-    }, [initialTitle, initialLocation, initialInfo]);
+        setImageR(initialImage);
+    }, [initialTitle, initialLocation, initialInfo,initialImage]);
+
+    const pickImage = async () => {
+        if (Platform.OS !== 'web') {
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (status !== 'granted') {
+            alert('Desculpe, precisamos da permissão para acessar a galeria!');
+            return;
+          }
+        }
+    
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+    
+        console.log(result);
+    
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+          setImageR(result.assets[0].uri);
+        }
+      };
 
     return (
         <View style={{
@@ -41,10 +68,10 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
                     {title}
                 </Text>
             </View>
-
+            <TouchableOpacity onPress={pickImage}>
             <View style={{ alignItems: 'center', padding:10, }}>
                 <Image
-                    source={require("../../assets/images/feed.jpg")}
+                    source={imageR ? { uri: imageR } : require("../../assets/images/licao.jpeg")}
                     style={{
                         resizeMode: 'cover',
                         width: 100,
@@ -53,9 +80,10 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
                     }}
                 />
             </View>
-            <MaterialIcons name="edit" size={20} color="white" style={{ marginLeft: 120,position:'absolute',marginTop:90 }}/>
+            <MaterialIcons name="edit" size={20} color="white" style={{ marginLeft: 120,position:'absolute',marginTop:50 }}/>
+            </TouchableOpacity>
             <View style={{ marginBottom: 8 }}>
-            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Titulo</Text>
+            <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic', marginLeft: 22 }}>Titulo</Text>
                 <TextInput
                     placeholder="..."
                     onChangeText={(text) => setTitle(text)}
@@ -72,7 +100,7 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
             </View>
 
             <View style={{ marginBottom: 8 }}>
-            <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold',marginLeft: 22 }}>Local</Text>
+            <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic',marginLeft: 22 }}>Local</Text>
                 <TextInput
                     placeholder="Igreja..."
                     onChangeText={(text) => setLocation(text)}
@@ -89,7 +117,7 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
             </View>
 
             <View style={{ marginBottom: 10 }}>
-                <Text style={{ color: "white", fontSize: 14, fontWeight: 'italic-bold', marginLeft: 22 }}>Descrição</Text>
+                <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic', marginLeft: 22 }}>Descrição</Text>
                 <TextInput
                     placeholder="Descrição..."
                     onChangeText={(text) => setInfo(text)}
@@ -105,7 +133,7 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={() =>{handleUpdate(title, location, info)}}>
+            <TouchableOpacity onPress={() =>{handleUpdate(title, location, info, imageR ?? "")}}>
                 <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 220, marginTop: 0 }} />
             </TouchableOpacity>
 
@@ -114,3 +142,4 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
 }
 
 export default ModalEdicaoRecados;
+
