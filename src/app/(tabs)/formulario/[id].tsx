@@ -6,7 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
 import { Modal, Portal, PaperProvider, TextInput } from 'react-native-paper';
-import db from "../../../../firebase/firebaseConfig.js";
+import { db } from "../../../../firebase/firebaseConfig";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, setDoc } from "firebase/firestore";
 import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
 

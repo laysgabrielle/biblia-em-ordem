@@ -1,6 +1,6 @@
 import { BarChart } from "react-native-gifted-charts";
 import { View } from "react-native";
-import db from "../../firebase/firebaseConfig";
+import { db } from "../../firebase/firebaseConfig";
 import { collection, where, Timestamp, query, getDocs, getDoc } from "firebase/firestore";
 import { Domingos } from "../helpers/domingos";
 import { useEffect, useState } from "react";

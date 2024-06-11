@@ -1,21 +1,24 @@
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, TextInput, Pressable, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { auth } from '../../firebase/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from "expo-router"; // Import useRouter
+import { loginContext } from './_layout';
 
 export default function Login() {
     const [userMail, setUserMail] = useState('');
     const [userPass, setUserPass] = useState('');
     const router = useRouter(); // Initialize useRouter
-
+    const { setAuthenticated } = useContext(loginContext);
+    const handleLogin = () => setAuthenticated(true);
     function userLogin() {
         signInWithEmailAndPassword(auth, userMail, userPass)
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log(user);
-                router.push("/feed"); // Navigate to the feed page
+                router.push({ pathname: "/feed", params: { success: "true" } }); // Navigate to the feed page
+                handleLogin(); // Set the user as authenticated
             })
             .catch((error) => {
                 const errorCode = error.code;

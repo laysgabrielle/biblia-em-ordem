@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { View, ScrollView, Modal, TouchableOpacity } from "react-native";
 import CardEvento from "../../../components/card-evento";
 import ModalEventos from "../../../components/modal-eventos";
 import { MaterialIcons } from "@expo/vector-icons";
 import {db} from "../../../../firebase/firebaseConfig";
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { loginContext } from '../../_layout';
 
 interface Evento {
   id: string;
@@ -18,13 +19,20 @@ export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const [cards, setCards] = useState<Evento[]>([]);
 
+  const [acesso, setAcesso] = useState(false);
+
+
   const fetchEventos = async () => {
     const querySnapshot = await getDocs(collection(db, "eventos"));
     const fetchedEventos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Evento[];
     setCards(fetchedEventos);
   };
 
+  const logged = useContext(loginContext);
+
   useEffect(() => {
+    logged.authenticated ? setAcesso(false) : setAcesso(true);
+    console.log("Autenticou? " + logged.authenticated)                 
     fetchEventos();
   }, []);
 
@@ -71,7 +79,7 @@ export default function Home() {
         alignItems: "center",
       }}
     >
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <TouchableOpacity disabled={acesso} onPress={() => setModalVisible(true)}>
         <MaterialIcons name="add" size={28} style={{ marginLeft: 355, margin: 5 }} />
       </TouchableOpacity>
       <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>

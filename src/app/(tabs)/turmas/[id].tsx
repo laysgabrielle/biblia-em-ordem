@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import AlunoChamada from "../../../components/aluno-chamada";
 import { View, Text, Pressable } from "react-native";
@@ -7,11 +7,12 @@ import { ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FloatingAction } from "react-native-floating-action";
 
-import db from "../../../../firebase/firebaseConfig.js";
+import { db } from "../../../../firebase/firebaseConfig";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, deleteDoc, setDoc, addDoc, getDoc } from "firebase/firestore";
 import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
 import MAdicionarAluno from "../../../components/m-adicionar-aluno";
+import { loginContext } from "../../_layout";
 
 
 const actions = [
@@ -55,6 +56,7 @@ const actions = [
 
 export default function id() {
     const local = useLocalSearchParams();
+    const logged = useContext(loginContext);
     //#region Chamada de alunos no firebase
     const nomeTurma = local.id; //Nome passado como parametro na rota
     const [dados, setDados] = useState<any[]>([]);
@@ -269,7 +271,7 @@ export default function id() {
             }}>
                 
                 <FloatingAction 
-                buttonSize={56}
+                buttonSize={logged.authenticated ? 56 : 0}
                 color="#152E45"
                 distanceToEdge={{vertical: 30, horizontal:30}}
                 actions={actions}

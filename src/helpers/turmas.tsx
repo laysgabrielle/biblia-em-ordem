@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { collection, getDocs, query } from "firebase/firestore";
-import db  from "../../firebase/firebaseConfig.js";
+import { db }  from "../../firebase/firebaseConfig";
 
 export const getTurmas = async (
     nomesTurmas: string[], 

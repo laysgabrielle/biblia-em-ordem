@@ -14,7 +14,9 @@ export default function Home() {
       />
 
       <View style={styles.cardContainer}>
-        <Link href={"feed/"}>
+        <Link href={{
+          pathname: "feed/", 
+          params: {success: "false"}}}>
           <CardSelecao title="Aluno" />
         </Link>
       </View>

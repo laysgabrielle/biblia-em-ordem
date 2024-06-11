@@ -1,19 +1,20 @@
 import "../../../styles/global.css";
 import { FlatList, Pressable, Text, TextInput, View, ActivityIndicator } from "react-native";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import CardTurma from "../../../components/card-turma";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
-import db from "../../../../firebase/firebaseConfig.js";
+import { db } from "../../../../firebase/firebaseConfig";
 import { collection, deleteDoc, getDocs, query, doc, setDoc } from "firebase/firestore";
 import { FloatingAction } from "react-native-floating-action";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
 import MAdicionarTurma from "../../../components/m-adicionar-turma";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { getTurmas } from "../../../helpers/turmas";
+import { loginContext } from "../../_layout";
 
 export default function Turmas(){
-
+    const logged = useContext(loginContext);
     const [modalAdicionarVisible, setModalAdicionarVisible] = useState(false);
     const [modalDeletarVisible, setModalDeletarVisible] = useState(false);
     const [modalEditarVisible, setModalEditarVisible] = useState(false);
@@ -165,7 +166,7 @@ export default function Turmas(){
                 left: 0,
                 bottom: 0,
             }}>
-                <FloatingAction buttonSize={56} actions={actions} onPressItem={name => 
+                <FloatingAction buttonSize={logged.authenticated ? 56 : 0} actions={actions} onPressItem={name => 
                     {if(name == "bt_add_turma"){setModalAdicionarVisible(true)} 
                     else if(name == "bt_deleta_turma"){setModalDeletarVisible(true)} }
                     } color="#152E45" distanceToEdge={{vertical: 30, horizontal:30}}/>
