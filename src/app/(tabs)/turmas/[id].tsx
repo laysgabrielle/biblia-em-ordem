@@ -67,6 +67,7 @@ export default function id() {
     * Busca conforme a referência de turma passada.
     */
    const q = query(collection(db, "alunos"), where("turma_associada", "==", turmaDocRef));
+   const q2 = query(collection(db, "frequencia"), where("dia_letivo", "==", new Date().toLocaleDateString()));
    console.log("Isso consulta " + q);
    /**
     * Mapeia os alunos no array 'dados'.
@@ -77,6 +78,18 @@ export default function id() {
            const dataVz = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
            setDados(dataVz);
            console.log("Logando " + dataVz);
+            const querySnapshot2 = await getDocs(q2);
+            console.log("Logando a freq" + querySnapshot2)
+            querySnapshot2.forEach(doc => { 
+                console.log("TR" + (doc.data().turma_referente == nomeTurma));
+                console.log("Presença marcada" + doc.data().presenca_marcada);
+                if(doc.data().presenca_marcada == true && doc.data().turma_referente == nomeTurma){
+                    console.log("Presença marcada" + doc.data().presenca_marcada);
+                    console.log("TR" + doc.data().turma_referente);
+                    setCheckboxEnabled(false);
+                    checarFalta();
+                }
+            });
        }
        catch (e) {
            console.log(e);
@@ -84,6 +97,7 @@ export default function id() {
    };
 
    useEffect(() => {
+        checarFalta();
         fetchDataAlunos();
     }, []);
     //#endregion
@@ -108,14 +122,20 @@ export default function id() {
      * Função que seta as faltas no banco de dados.
      */
     //TODO: Evitar registros duplicados.
-    const salvaFrequencia = () => {
+    const salvaFrequencia = async () => {
         console.log("Setar faltas pressed");
         faltasDoDia.forEach(async element => {
             const alunoDocRef = doc(db, "alunos", element.toString());
-            await updateDoc(alunoDocRef, { faltas: arrayUnion(new Date()) }), 
+            await updateDoc(alunoDocRef, { faltas: arrayUnion(new Date().toLocaleDateString()) }), 
             console.log("Falta registrada"),
             setCheckboxEnabled(false);
+            checarFalta();
     })
+        await addDoc(collection(db, "frequencia"), {
+            turma_referente: nomeTurma,
+            presenca_marcada: true,
+            dia_letivo: new Date().toLocaleDateString(),
+        });
     }
     const [modalEditarAluno, setModalEditarAluno] = useState(false);
     const [getIdAluno, setIdAluno] = useState<string>("");
@@ -151,7 +171,8 @@ export default function id() {
             nome: textNomeAluno,
             dataNascimento: textDataNascimento,   
             faltas: [],
-            turma_associada: turmaDocRef     
+            turma_associada: turmaDocRef,
+            turma_referente: nomeTurma,     
         });
         fetchDataAlunos();
     }
@@ -164,6 +185,37 @@ export default function id() {
         });
         fetchDataAlunos();
     }
+
+    const [mudarCor, setMudarCor] = useState(false);
+    const faltosos: Array<Object> = [];
+    const handleMudarCor = (id: string) => {
+        if(!faltosos.includes(id)){
+            faltosos.push(id);
+        } else {
+            //Remove o id do aluno do array de faltas
+            faltasDoDia.splice(faltasDoDia.indexOf(id), 1);
+            console.log(faltasDoDia);
+        }
+    }
+
+    const [alunosFaltaram, setAlunosFaltaram] = useState<any[]>([]);
+    const checarFalta = async () => {
+        const turmaDocRef = doc(db, "turmas", "turma"+nomeTurma);
+        const q = query(collection(db, "alunos"), where("faltas", "array-contains", new Date().toLocaleDateString()));
+        const querySnapshot = await getDocs(q);
+        console.log("Logando a freqqqq" + querySnapshot);
+        querySnapshot.forEach(doc => {
+            if(doc.data().turma_referente == nomeTurma){
+                setMudarCor(true);
+                alunosFaltaram.push(doc.data().nome)
+                console.log("O if deu verdadeiro" + doc.data().nome);
+            } else {
+                //setMudarCor(false);
+                console.log("O if deu falso" + doc.data().nome);
+            }
+        });
+    }
+
 
     return (
         <PaperProvider>
@@ -193,8 +245,9 @@ export default function id() {
                 </View>
                 <ScrollView>
                     {
-                        dados.map(dado => (
-                            <AlunoChamada 
+                        dados.map(dado => (                            
+                            <AlunoChamada
+                                faltou={alunosFaltaram.includes(dado.nome)}
                                 deleteAluno={() => deletarAluno(dado.id)} 
                                 modoEditar={editandoAluno} 
                                 editarAluno={() => handleEditarAluno(dado.id)}
