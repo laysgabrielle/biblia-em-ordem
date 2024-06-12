@@ -3,7 +3,7 @@ import { View, Dimensions, Modal, TouchableOpacity, ScrollView } from "react-nat
 import CardEvento from "../../../components/card-evento";
 import ModalEventos from "../../../components/modal-eventos";
 import { MaterialIcons } from "@expo/vector-icons";
-import {db} from "../../../../firebase/firebaseConfig";
+import { db } from "../../../../firebase/firebaseConfig";
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 interface Evento {
@@ -62,7 +62,7 @@ export default function Home() {
     <View
       style={{
         flex: 1,
-        backgroundColor: "#c6c6c6",
+        backgroundColor: "#B9C1C7",
         justifyContent: "center",
         alignItems: "center",
       }}
