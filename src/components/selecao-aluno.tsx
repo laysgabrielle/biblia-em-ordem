@@ -17,10 +17,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "orange",
     width: 240,
-    height: 90,
+    height: 70,
     borderRadius: 10,
-    justifyContent: 'center', // Centraliza o texto verticalmente
-    alignItems: 'center', // Centraliza o texto horizontalmente
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   text: {
     fontSize: 20,

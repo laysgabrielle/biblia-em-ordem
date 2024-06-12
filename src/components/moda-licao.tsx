@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Text, TextInput, TouchableOpacity, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 interface CardLicaoProps {
@@ -8,18 +8,20 @@ interface CardLicaoProps {
     closeModal: () => void;
     initialTitle: string;
     initialSubtitle: string;
-    handleUpdate: (newTitle: string, newSubtitle: string) => void;  
+    initialImage: string | null;
+    handleUpdate: (newTitle: string, newImage: string, newSubtitle: string) => void;  
 }
 
-const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle, initialSubtitle, handleUpdate }) => {
+const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,initialImage, initialSubtitle, handleUpdate }) => {
     const [inputTitle, setInputTitle] = useState<string>(initialTitle);
     const [inputSubtitle, setInputSubtitle] = useState<string>(initialSubtitle);
-    const [imageE, setImageE] = useState<string | null>(null);
+    const [imageL, setImageL] = useState<string | null>(null);
 
     useEffect(() => {
         setInputTitle(initialTitle);
         setInputSubtitle(initialSubtitle);
-    }, [initialTitle, initialSubtitle]);
+        setImageL(initialImage);
+    }, [initialTitle, initialSubtitle,initialImage]);
 
     const pickImage = async () => {
         if (Platform.OS !== 'web') {
@@ -40,7 +42,7 @@ const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,
         console.log(result);
     
         if (!result.canceled && result.assets && result.assets.length > 0) {
-          setImageE(result.assets[0].uri);
+          setImageL(result.assets[0].uri);
         }
       };
 
@@ -51,10 +53,10 @@ const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,
             backgroundColor: "#152E45",
             borderRadius: 15,
             padding: 8,
-            margin: 0,
+            margin: 2,
         }}>
             <TouchableOpacity onPress={closeModal}>
-            <MaterialIcons name="arrow-back" size={20} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 8 }}/>
+            <MaterialIcons name="arrow-back" size={22} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 5 }}/>
             </TouchableOpacity>
             <View style={{ alignItems: 'center' }}>
                 <Text style={{ color: "white", fontSize: 18, fontStyle: 'italic', marginBottom: 2 }}>
@@ -64,7 +66,7 @@ const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,
             <TouchableOpacity onPress={pickImage}>
             <View style={{ alignItems: 'center', padding: 10 }}>
                 <Image
-                    source={imageE ? { uri: imageE } : require("../../assets/images/feed.jpg")}
+                    source={imageL ? { uri: imageL } : require("../../assets/images/feed.jpg")}
                     style={{
                         resizeMode: 'cover',
                         width: 180,
@@ -73,7 +75,7 @@ const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,
                     }}
                 />
             </View>
-            <MaterialIcons name="edit" size={20} color="white"style={{ marginLeft: 110 ,position:'absolute', marginTop: 50 }}/>
+            <Feather name="edit-2" size={25} color="white"style={{ marginLeft: 105 ,position:'absolute', marginTop: 50 }}/>
             </TouchableOpacity>
             <View style={{ marginBottom: 10 }}>
             <Text style={{ color: "white", fontSize: 14,fontStyle: 'italic', marginLeft: 22 }}>Titulo</Text>
@@ -108,8 +110,8 @@ const ModalLicao: React.FC<CardLicaoProps> = ({ title, closeModal, initialTitle,
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={() => handleUpdate(inputTitle, inputSubtitle)}>
-                <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 210, marginTop: 5 }} />
+            <TouchableOpacity onPress={() => handleUpdate(inputTitle, inputSubtitle, imageL ?? "")}>
+                <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 210, marginTop: 0 }} />
             </TouchableOpacity>
         </View>
     );

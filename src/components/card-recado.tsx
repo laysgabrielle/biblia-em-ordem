@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Text, View, Image } from "react-native";
 import { Modal, TouchableOpacity  } from 'react-native';
@@ -9,24 +9,27 @@ interface props {
     title: string;
     location: string;
     info: string;
+    image: string | null;
     deleteCard: (id: string) => void;
 }
 
-const CardRecado: React.FC<props> = ({id, title, location, info, deleteCard }) => {
+const CardRecado: React.FC<props> = ({id, title, location,image, info, deleteCard }) => {
     const [showDetails, setShowDetails] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [eventTitle, setEventTitle] = useState(title);
     const [eventLocation, setEventLocation] = useState(location);
     const [eventInfo, setEventInfo] = useState(info);
+    const [eventImage, setEventImage] = useState(image);
 
     const closeModal = () => {
         setModalVisible(false);
     }
 
-    const handleUpdate = (newTitle: string, newLocation: string, newInfo: string) => {
+    const handleUpdate = (newTitle: string, newLocation: string, newInfo: string,newImage: string | null) => {
         setEventTitle(newTitle);
         setEventLocation(newLocation);
         setEventInfo(newInfo);
+        setEventImage(newImage);
         closeModal();
     }
 
@@ -38,7 +41,7 @@ const CardRecado: React.FC<props> = ({id, title, location, info, deleteCard }) =
             <View
                 style={{
                     width: 350,
-                    height: showDetails ? 280 : 220, // Ajusta a altura do card conforme o estado
+                    height: showDetails ? 280 : 210, // Ajusta a altura do card conforme o estado
                     backgroundColor: "#152E45",
                     borderRadius: 10,
                     padding:10,
@@ -56,14 +59,14 @@ const CardRecado: React.FC<props> = ({id, title, location, info, deleteCard }) =
             >
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 10}}>
                 <TouchableOpacity onPress={() => deleteCard(id)}>
-                    <MaterialIcons name="delete" size={20} color="orange"/>
+                    <MaterialIcons name="delete-outline" size={20} color="orange" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setModalVisible(true)}>
-                    <MaterialIcons name="edit" size={20} color="orange" />
+                    <Feather name="edit-2" size={20} color="orange" />
                 </TouchableOpacity>
                 </View>
                 <Image
-                    source={require("../../assets/images/licao.jpeg")} // Caminho da imagem
+                   source={eventImage ? { uri: eventImage } : require("../../assets/images/licao.jpeg")} // Caminho da imagem
                     style={{
                         width: showDetails ? 105 : 100,
                         height: showDetails ? 105 : 100, // Altura da imagem conforme o estado
@@ -122,6 +125,7 @@ const CardRecado: React.FC<props> = ({id, title, location, info, deleteCard }) =
                             initialTitle={eventTitle} 
                             initialLocation={eventLocation} 
                             initialInfo={eventInfo} 
+                            initialImage={eventImage}
                             handleUpdate={handleUpdate} />
                         </View>
                     </View>

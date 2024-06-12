@@ -31,7 +31,7 @@ export default function Home() {
       />
 
       <View style={styles.textContainer}>
-        <Text style={styles.text}>Biblia em ordem </Text>
+        <Text style={styles.text}>Igreja Assembleia de Deus </Text>
       </View>
     </View>
   );
@@ -41,22 +41,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#152E45',
-    justifyContent: 'center', // Centraliza o conteúdo verticalmente
-    alignItems: 'center', // Centraliza o conteúdo horizontalmente
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   image: {
     width: width,
   },
   cardContainer: {
-    marginTop: 5, // Espaçamento para não sobrepor as imagens
-    marginBottom: 5, // Espaçamento para não sobrepor as imagens
+    marginTop: 5, 
+    marginBottom: 5, 
 
   },
   textContainer: {
     position: 'absolute',
     top: 500,
     left: 0,
-    right: 180,
+    right: 100,
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
@@ -64,6 +64,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 40,
     color: 'white',
-    textAlign: 'center',
+    
   },
 });

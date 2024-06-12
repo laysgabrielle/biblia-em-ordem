@@ -1,5 +1,5 @@
 import "../../../styles/global.css";
-import { FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { FlatList, Pressable, Text, TextInput, View, ActivityIndicator } from "react-native";
 import React, {useState, useEffect} from "react";
 import CardTurma from "../../../components/card-turma";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -22,14 +22,18 @@ export default function Turmas(){
     const [nomesTurmas, setNomesTurmas] = useState<string[]>([]);
     const [achouTurmas, setAchouTurmas] = useState(true);
 
+    const [estaCarregando, setEstaCarregando] = useState(false);
+
     
     useEffect(() => {
-        getTurmas(nomesTurmas, setNomesTurmas, achouTurmas, setAchouTurmas);
+        getTurmas(nomesTurmas, setNomesTurmas, setAchouTurmas, setEstaCarregando );
+        if(nomesTurmas.length > 0)
+            setAchouTurmas(true);
     }, []);
 
     const refresh = () => {
         if(nomesTurmas.length == 0)
-            getTurmas(nomesTurmas, setNomesTurmas, achouTurmas, setAchouTurmas);
+            getTurmas(nomesTurmas, setNomesTurmas, setAchouTurmas, setEstaCarregando);
         else
             setAchouTurmas(true);
         
@@ -74,7 +78,7 @@ export default function Turmas(){
             await deleteDoc(turmaDocRef);
         });
         console.log("Turma deletada com sucesso");
-        getTurmas(nomesTurmas, setNomesTurmas, achouTurmas, setAchouTurmas);
+        getTurmas(nomesTurmas, setNomesTurmas, setAchouTurmas, setEstaCarregando);
     }
 
     const handleCheckboxDelete = (id: string) => {
@@ -100,14 +104,18 @@ export default function Turmas(){
             nome: textoDoTextInput,        
         });
         console.log("Turma criada com sucesso");
-        getTurmas(nomesTurmas, setNomesTurmas, achouTurmas, setAchouTurmas);
+        getTurmas(nomesTurmas, setNomesTurmas, setAchouTurmas, setEstaCarregando);
     }
 
     return (
         <PaperProvider>
         <View className="bg-gray-base flex flex-1">
         <View className="flex-1 mx-4 mt-48 bg-gray-base">
-           { achouTurmas ? <View className="flex-wrap flex-row justify-evenly items-center">   
+           { estaCarregando ? 
+           <View className="justify-center items-center">
+           <ActivityIndicator size="large" color="#F7900B"/>
+           </View>
+            :  <View className="flex-wrap flex-row justify-evenly items-center">   
               {Object.values(nomesTurmas).map((nomeTurma, index) => (
                 <Link className="m-3" key={index} href={{
                     pathname: "/turmas/[id]",
@@ -118,16 +126,7 @@ export default function Turmas(){
                     <CardTurma deletar={() => console.log("qa")} temPermissao={true} nomeTurma={nomeTurma} icone="book"/>
                 </Link>
             ))} 
-            </View> :
-            <View>
-                <Text className="text-center p-6">Nenhuma turma encontrada.</Text>
-                <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={refresh}>
-                    <MaterialIcons name="refresh" size={48} color="white" />
-                    <Text className="color-white">Recarregar</Text>
-                
-                
-                </Pressable>
-            </View>
+            </View> 
             }
                                 <Portal>
                         <Modal visible={modalDeletarVisible} onDismiss={() => setModalDeletarVisible(false)}>

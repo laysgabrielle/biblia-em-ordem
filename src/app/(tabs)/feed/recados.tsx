@@ -13,6 +13,7 @@ interface Recado {
   title: string;
   location: string;
   info: string;
+  image: string | null;
 }
 
 export default function Home() {

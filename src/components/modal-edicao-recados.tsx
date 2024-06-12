@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, Image, TextInput, TouchableOpacity, Platform } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 
 interface CardRecadosProps {
@@ -9,22 +9,24 @@ interface CardRecadosProps {
     initialTitle: string;
     initialLocation: string;
     initialInfo: string;
-    handleUpdate: (newTitle: string, newLocation: string, newInfo: string) => void;
+    initialImage: string | null;
+    handleUpdate: (newTitle: string, newLocation: string, newImage: string, newInfo: string) => void;
 }
 
-const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTitle, initialLocation,initialInfo, handleUpdate}) => {
+const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTitle,initialImage, initialLocation,initialInfo, handleUpdate}) => {
     const [inputText, setInputText] = useState<string>("");
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [info, setInfo] = useState<string>("");
-    const [imageE, setImageE] = useState<string | null>(null);
+    const [imageR, setImageR] = useState<string | null>(null);
 
     useEffect(() => {
         setTitle(initialTitle);
         setLocation(initialLocation);
         setInfo(initialInfo);
-    }, [initialTitle, initialLocation, initialInfo]);
+        setImageR(initialImage);
+    }, [initialTitle, initialLocation, initialInfo,initialImage]);
 
     const pickImage = async () => {
         if (Platform.OS !== 'web') {
@@ -45,7 +47,7 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
         console.log(result);
     
         if (!result.canceled && result.assets && result.assets.length > 0) {
-          setImageE(result.assets[0].uri);
+          setImageR(result.assets[0].uri);
         }
       };
 
@@ -59,17 +61,17 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
             margin: 2,
         }}>
             <TouchableOpacity onPress={closeModal}>
-            <MaterialIcons name="arrow-back" size={20} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 5 }}/>
+            <MaterialIcons name="arrow-back" size={22} color="white" style={{ marginLeft: 11, position: 'absolute', marginTop: 5 }}/>
             </TouchableOpacity>
             <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: "white", fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
+                <Text style={{ color: "white", fontSize: 20, fontStyle: 'italic', marginBottom: 8 }}>
                     {title}
                 </Text>
             </View>
             <TouchableOpacity onPress={pickImage}>
             <View style={{ alignItems: 'center', padding:10, }}>
                 <Image
-                    source={imageE ? { uri: imageE } : require("../../assets/images/licao.jpeg")}
+                    source={imageR ? { uri: imageR } : require("../../assets/images/licao.jpeg")}
                     style={{
                         resizeMode: 'cover',
                         width: 100,
@@ -78,7 +80,7 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
                     }}
                 />
             </View>
-            <MaterialIcons name="edit" size={20} color="white" style={{ marginLeft: 120,position:'absolute',marginTop:50 }}/>
+            <Feather name="edit-2" size={25} color="white" style={{ marginLeft: 115,position:'absolute',marginTop:50 }}/>
             </TouchableOpacity>
             <View style={{ marginBottom: 8 }}>
             <Text style={{ color: "white", fontSize: 14, fontStyle: 'italic', marginLeft: 22 }}>Titulo</Text>
@@ -131,8 +133,8 @@ const ModalEdicaoRecados: React.FC<CardRecadosProps> = ({ closeModal, initialTit
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={() =>{handleUpdate(title, location, info)}}>
-                <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 220, marginTop: 0 }} />
+            <TouchableOpacity onPress={() =>{handleUpdate(title, location, info, imageR ?? "")}}>
+                <MaterialIcons name="check" size={24} color="white" style={{ marginLeft: 222, marginTop: -4 }} />
             </TouchableOpacity>
 
         </View>

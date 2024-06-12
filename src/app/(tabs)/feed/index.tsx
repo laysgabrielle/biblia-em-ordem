@@ -3,7 +3,7 @@ import { View, Dimensions, Modal, TouchableOpacity, ScrollView } from "react-nat
 import CardEvento from "../../../components/card-evento";
 import ModalEventos from "../../../components/modal-eventos";
 import { MaterialIcons } from "@expo/vector-icons";
-import { db } from "../../../../firebase/firebaseConfig";
+import { db } from "../../../../firebase/firebaseConfig.js";
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 interface Evento {
@@ -11,6 +11,7 @@ interface Evento {
   title: string;
   location: string;
   info: string;
+  image: string | null;
 }
 
 export default function Home() {
@@ -40,16 +41,17 @@ export default function Home() {
     }
   };
 
-  const addCard = async (title: string, location: string, info: string) => {
+  const addCard = async (title: string, location: string, info: string, image: string | null) => {
     if (title && location && info) {
       try {
         const docRef = await addDoc(collection(db, "eventos"), {
           title,
           location,
-          info
+          info,
+          image
         });
         console.log("Document written with ID: ", docRef.id);
-        setCards([...cards, { id: docRef.id, title, location, info }]);
+        setCards([...cards, { id: docRef.id, title, location, info ,image}]);
         closeModal();
       } catch (e) {
         console.error("Error adding document: ", e);
@@ -68,18 +70,21 @@ export default function Home() {
       }}
     >
       <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <MaterialIcons name="add" size={28} style={{ marginLeft: 355, margin: 5 }} />
+        <AntDesign name="pluscircleo" size={28} color= "#152E45" style={{ marginLeft: 355, margin: 5,paddingTop:15 }} />   
       </TouchableOpacity>
       <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
         {cards.map((card) => (
-          <CardEvento
-            key={card.id}
-            id={card.id}
-            title={card.title}
-            location={card.location}
-            info={card.info}
-            deleteCard={deleteCard}
-          />
+          <View key={card.id} style={{ marginBottom: 20 }}>
+            <CardEvento
+              key={card.id}
+              id={card.id}
+              title={card.title}
+              location={card.location}
+              info={card.info}
+              image={card.image}
+              deleteCard={deleteCard}
+            />
+          </View>
         ))}
       </ScrollView>
       <Modal
