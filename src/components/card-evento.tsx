@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Modal, TouchableOpacity } from 'react-native';
 import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import { Text, View, Image } from "react-native";
 import ModalEdicaoEventos from './modal-edicao-evento';
+import { UserContext } from '../context/UserContext';
 
 interface Props {
   id: string;
@@ -20,6 +21,7 @@ const CardEvento: React.FC<Props> = ({ id, title, location, info,image, deleteCa
   const [eventLocation, setEventLocation] = useState(location);
   const [eventInfo, setEventInfo] = useState(info);
   const [eventImage, setEventImage] = useState(image);
+  const {usuarioLogado} = useContext(UserContext);
 
   const closeModal = () => {
     setModalVisible(false);
@@ -63,14 +65,14 @@ const CardEvento: React.FC<Props> = ({ id, title, location, info,image, deleteCa
             resizeMode: "cover",
           }}
         />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', position: 'absolute', paddingHorizontal: 10, marginTop: 10 }}>
-          <TouchableOpacity onPress={() => deleteCard(id)}>
+        {          usuarioLogado ?<View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', position: 'absolute', paddingHorizontal: 10, marginTop: 10 }}>
+ <TouchableOpacity onPress={() => deleteCard(id)}>
             <MaterialIcons name="delete-outline" size={20} color="orange" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Feather name="edit-2" size={20} color="orange" />
-          </TouchableOpacity>
-        </View>
+          </TouchableOpacity> 
+        </View> : null}
         <View
           style={{
             padding: 12,

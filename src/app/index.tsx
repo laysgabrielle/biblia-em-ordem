@@ -1,11 +1,14 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Text, View, Image, StyleSheet, Dimensions } from "react-native";
 import { Link } from "expo-router";
 import CardSelecao from "../components/selecao-aluno";
+import { UserContext } from "../context/UserContext";
 
 const { width, height } = Dimensions.get("window");
 
 export default function Home() {
+  const {toggleUsuarioLogado} = useContext(UserContext);
+
   return (
     <View style={styles.container}>
       <Image
@@ -14,7 +17,7 @@ export default function Home() {
       />
 
       <View style={styles.cardContainer}>
-        <Link href={"feed/"}>
+        <Link href={"feed/"} onPress={() => {toggleUsuarioLogado(false) }}>
           <CardSelecao title="Aluno" />
         </Link>
       </View>

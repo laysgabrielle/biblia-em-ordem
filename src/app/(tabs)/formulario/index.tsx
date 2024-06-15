@@ -1,10 +1,11 @@
 import { Link } from "expo-router";
 import { Text, TextInput, View, Pressable } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext } from "../../../context/UserContext";
 import CardTurma from "../../../components/card-turma";
 import "../../../styles/global.css";
 import { MaterialIcons } from "@expo/vector-icons";
-import {db} from "../../../../firebase/firebaseConfig.js";
+import {db} from "../../../../firebase/firebaseConfig";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
 
@@ -12,7 +13,7 @@ import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
 export default function Formulario() {
     const [nomesTurmas, setNomesTurmas] = useState<string[]>([]);
     const [achouTurmas, setAchouTurmas] = useState(true);
-
+    const { usuarioLogado } = useContext(UserContext);
     const getTurmas = async () => {
         try {
             console.log("Entrou na função getTurmas");
@@ -54,7 +55,7 @@ export default function Formulario() {
     }
     return (
         <View className="bg-gray-base flex flex-1">
-            <View className="flex-1 mx-4 mt-48 bg-gray-base">
+            {usuarioLogado ? <View className="flex-1 mx-4 mt-48 bg-gray-base">
                 {achouTurmas ? <View className="flex-wrap flex-row justify-evenly items-center">
                     {Object.values(nomesTurmas).map((nomeTurma, index) => (
                         <Link className="m-3" key={index} href={{
@@ -76,7 +77,10 @@ export default function Formulario() {
                         </Pressable>
                     </View>
                 }
-            </View>
+            </View> : 
+            <View className="justify-center items-center mt-48">
+            <Text>Você precisa estar logado para acessar os formulários.</Text>
+            </View>}
         </View>
     )
 }

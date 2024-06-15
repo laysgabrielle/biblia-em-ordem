@@ -1,4 +1,4 @@
-import React , { useState, useEffect} from "react";
+import React , { useState, useEffect, useContext} from "react";
 import { View, Modal,ScrollView, TouchableOpacity } from "react-native";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import CardEvento from "../../../components/card-evento";
@@ -7,6 +7,8 @@ import ModalRecados from "../../../components/modal-recados";
 import ModalLicao from "../../../components/moda-licao";
 import { collection, addDoc, getDocs, deleteDoc, doc  } from 'firebase/firestore';
 import {db} from "../../../../firebase/firebaseConfig";
+import { UserContext } from "../../../context/UserContext";
+
 
 interface Recado {
   id: string;
@@ -19,6 +21,7 @@ interface Recado {
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const [cards, setCards] = useState<Recado[]>([]);
+  const {usuarioLogado} = useContext(UserContext);
 
     const fetchRecados = async () => {
         const querySnapshot = await getDocs(collection(db, "recados"));
@@ -72,9 +75,9 @@ const deleteCard = async (id: string) => {
         alignItems: "center", // Alinhamento horizontal centralizado
       }}
     >
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      {usuarioLogado ? <TouchableOpacity onPress={() => setModalVisible(true)}>
         <AntDesign name="pluscircleo" size={28} color= "#152E45" style={{ marginLeft: 355, margin: 5,paddingTop:15 }} />   
-      </TouchableOpacity>
+      </TouchableOpacity>: null}
       <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>  
       {cards.map((card, recados) => (
         <View key={card.id} style={{ marginBottom: 20 }}>
