@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { Tabs } from "expo-router";
 import CardFeed from "../../../components/card-feed";
 import { MaterialIcons } from "@expo/vector-icons";
-import {db} from "../../../../firebase/firebaseConfig";
+import {db} from "../../../../firebase/firebaseConfig.js";
 import { collection, getDocs } from "firebase/firestore";
 
 interface Licao {

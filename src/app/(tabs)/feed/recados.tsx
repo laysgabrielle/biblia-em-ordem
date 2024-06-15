@@ -6,7 +6,7 @@ import CardRecado from "../../../components/card-recado";
 import ModalRecados from "../../../components/modal-recados";
 import ModalLicao from "../../../components/moda-licao";
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { db } from "../../../../firebase/firebaseConfig";
+import { db } from "../../../../firebase/firebaseConfig.js";
 
 interface Recado {
   id: string;
@@ -34,24 +34,24 @@ export default function Home() {
     setModalVisible(false);
   };
 
-  const addCard = async (title: string, location: string, info: string) => {
-    if (title && location && info) {
-      try {
-        const docRef = await addDoc(collection(db, "recados"), {
-          title,
-          location,
-          info
-        });
-        console.log("Document written with ID: ", docRef.id);
-        setCards([...cards, { id: docRef.id, title, location, info }]);
-        closeModal();
-      } catch (e) {
-        console.error("Error adding document: ", e);
-      }
-    } else {
-      alert("All fields are required!");
+const addCard = async (title: string, location: string, info: string) => {
+  if (title && location && info) {
+    try {
+      const docRef = await addDoc(collection(db, "recados"), {
+        title,
+        location,
+        info
+      });
+      console.log("Document written with ID: ", docRef.id);
+      setCards([...cards, { id: docRef.id, title, location, info }]);
+      closeModal();
+    } catch (e) {
+      console.error("Error adding document: ", e);
     }
-  };
+  } else {
+    alert("All fields are required!");
+  }
+};
 
   const deleteCard = async (id: string) => {
     try {
@@ -72,19 +72,19 @@ export default function Home() {
       }}
     >
       <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <MaterialIcons name="add" size={28} style={{ marginLeft: 355, margin: 5 }}></MaterialIcons>
+        <MaterialIcons name = "add" size={28} style={{marginLeft: 355, margin:5}}></MaterialIcons>
       </TouchableOpacity>
-      <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
-        {cards.map((card, recados) => (
-          <CardRecado
-            key={recados}
-            id={card.id}
-            title={card.title}
-            location={card.location}
-            info={card.info}
-            deleteCard={deleteCard}
-          />
-        ))}
+      <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>  
+      {cards.map((card, recados) => (
+        <CardRecado
+          key={recados}
+          id={card.id}
+          title={card.title}
+          location={card.location}
+          info={card.info}
+          deleteCard={deleteCard}
+        />
+      ))} 
       </ScrollView>
       <Modal
         animationType="slide"

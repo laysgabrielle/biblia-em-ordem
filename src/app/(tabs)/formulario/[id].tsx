@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
 import { Modal, Portal, PaperProvider } from 'react-native-paper';
-import { db } from "../../../../firebase/firebaseConfig";
+import { db } from "../../../../firebase/firebaseConfig.js";
 import { collection, addDoc, getDocs, query, where, doc, DocumentReference, deleteDoc, Timestamp } from "firebase/firestore";
 import { MaterialIcons } from "@expo/vector-icons";
 import CardInfoForm from '../../../components/card-info-form';

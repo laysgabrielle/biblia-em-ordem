@@ -70,7 +70,7 @@ export default function Home() {
       }}
     >
       <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <AntDesign name="pluscircleo" size={28} color= "#152E45" style={{ marginLeft: 355, margin: 5,paddingTop:15 }} />   
+        {/* <AntDesign name="pluscircleo" size={28} color= "#152E45" style={{ marginLeft: 355, margin: 5,paddingTop:15 }} />    */}
       </TouchableOpacity>
       <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
         {cards.map((card) => (
