@@ -1,10 +1,12 @@
 import { Tabs } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 
 
 export default function TabLayout() {
     const [route, setRoute] = useState('feed');
+    const {usuarioLogado} = useContext(UserContext);
     return (
         <Tabs screenOptions={
             {
