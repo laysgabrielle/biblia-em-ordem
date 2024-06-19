@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useContext } from "react";
+import { UserContext } from "../../../context/UserContext";
 import AlunoChamada from "../../../components/aluno-chamada";
 import { View, Text, Pressable } from "react-native";
 import { useLocalSearchParams } from "expo-router";
@@ -7,7 +7,7 @@ import { ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FloatingAction } from "react-native-floating-action";
 
-import {db} from "../../../../firebase/firebaseConfig.js";
+import {db} from "../../../../firebase/firebaseConfig";
 import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, deleteDoc, setDoc, addDoc, getDoc } from "firebase/firestore";
 import { MesAtual, Hoje, Domingos } from "../../../helpers/domingos";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
@@ -55,6 +55,7 @@ const actions = [
 
 export default function id() {
     const local = useLocalSearchParams();
+    const {usuarioLogado} = useContext(UserContext);
     //#region Chamada de alunos no firebase
     const nomeTurma = local.id; //Nome passado como parametro na rota
     const [dados, setDados] = useState<any[]>([]);
@@ -241,7 +242,7 @@ export default function id() {
             </View>
             <View className="justify-center items-center ">
                 <View className="flex-row justify-between items-baseline">
-                    <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toString().toLocaleUpperCase()}</Text>
+                    <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id?.toString().toLocaleUpperCase()}</Text>
                 </View>
                 <ScrollView>
                     {
@@ -260,7 +261,7 @@ export default function id() {
                     }
                 </ScrollView>
             </View>
-            <View style={{
+            {usuarioLogado ? <View style={{
                 position: "absolute",
                 top: 0,
                 right: 0,
@@ -288,7 +289,7 @@ export default function id() {
                             break;
                     }
                 }}/>
-            </View>
+            </View>:null}
         </View>
         <Portal>
             <Modal visible={modalAdicionarAluno} onDismiss={() => setModalAdicionarAluno(false)}>

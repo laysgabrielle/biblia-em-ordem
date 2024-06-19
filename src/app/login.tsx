@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, TextInput, Pressable, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
-import { useState } from 'react';
-import { auth } from '../../firebase/firebaseConfig.js';
+import { useState, useContext } from 'react';
+import { UserContext } from '../context/UserContext';
+import { auth } from '../../firebase/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from "expo-router"; 
 
@@ -10,12 +11,15 @@ export default function Login() {
     const [userPass, setUserPass] = useState('');
     const router = useRouter(); 
 
+    const {usuarioLogado, toggleUsuarioLogado} = useContext(UserContext);
+
     function userLogin() {
         signInWithEmailAndPassword(auth, userMail, userPass)
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log(user);
-                router.push("/feed"); 
+                router.push("/feed");
+                toggleUsuarioLogado(true);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -31,6 +35,7 @@ export default function Login() {
         >
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <Image source={require('../../assets/images/blidem.png')}style={styles.image}/>
+                {usuarioLogado ? <Text>Usuário logado</Text> : <Text>Usuário não logado</Text>}
                 <TextInput
                     style={styles.input}
                     placeholder="Login"

@@ -39,7 +39,7 @@ function CardInfoForm({ title, isQtd, onValueChange, value, id, onDelete , idDoc
                 height: 90,
                 justifyContent:'space-around'
             }}>
-                <Text className="border-t-2 border-white pt-2 font-bold text-xl"
+                <Text className="border-t-2 border-white pt-2 font-black text-xl"
                     style={{
                         color: 'rgb(185, 193, 199)',
                         width: 167,
@@ -51,9 +51,7 @@ function CardInfoForm({ title, isQtd, onValueChange, value, id, onDelete , idDoc
                     height: 30,
                     width: 50,
                 }} onPress={()=>onDelete(idDoc)}>
-                    <MaterialIcons name="delete-outline" size={23} color="orange" style={{
-                        color: temPermissao ? 'orange' : 'gray',
-                    }} />
+                    <MaterialIcons name="delete-outline" size={23} color="#F7900B"/>
                 </Pressable>
             </View>
             <View>
@@ -74,11 +72,10 @@ function CardInfoForm({ title, isQtd, onValueChange, value, id, onDelete , idDoc
                         separator=""
                         precision={0}
                         minValue={0}
-                        placeholder='0'
-                        placeholderTextColor={'rgb(185, 193, 199)'}
+                        
                     />
                 ) : (
-                    <CurrencyInput className="border-b-2 border-white w-12"
+                    <CurrencyInput className="border-b-2 border-white w-14"
                         style={{ color: 'rgb(185, 193, 199)', textAlign: 'center' }}
                         value={value}
                         maxLength={6}
@@ -86,8 +83,6 @@ function CardInfoForm({ title, isQtd, onValueChange, value, id, onDelete , idDoc
                             onValueChange(id, value)
                         }}
                         minValue={0}
-                        placeholder='0'
-                        placeholderTextColor={'rgb(185, 193, 199)'}
                     />
                 )}
             </View>

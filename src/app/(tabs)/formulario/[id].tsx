@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, SafeAreaView, ScrollView, TouchableOpacity, StyleSheet, Pressable, TextInput } from "react-native";
+import { Text, View, SafeAreaView, ScrollView, TouchableOpacity, StyleSheet, Pressable, TextInput, ActivityIndicator } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import { collection, addDoc, getDocs, query, where, doc, DocumentReference, dele
 import { MaterialIcons } from "@expo/vector-icons";
 import CardInfoForm from '../../../components/card-info-form';
 import Checkbox from '../../../components/checkbox-form';
+import { getCampos } from '../../../helpers/campos';
 
 export default function id() {
     //Início das variáveis de estado
@@ -24,11 +25,12 @@ export default function id() {
     const [typeCard, setTypeCard] = useState<number[]>();
 
     //Define a visibilidade do modal
-    const [visibleModal, setVisibleModal] = useState(false);
+    const [visibleModalAddCard, setvisibleModalAddCard] = useState(false);
 
     const [cardsCriados, setCardsCriados] = useState<number>(0)
 
     const [inputs, setInputs] = useState<Input[]>([]);
+    const [estaCarregando, setEstaCarregando] = useState(false);
 
     interface Input {
         value: number | null;
@@ -36,12 +38,14 @@ export default function id() {
         isQtd: boolean;
         idDoc: string;
     }
+
     //Fim das variáveis de estado
 
+    const local = useLocalSearchParams();
     const { id } = useLocalSearchParams() // recebe o nome do doc turma como id
     const geraRef = (id: string | undefined | string[]) => {
         if (typeof id === 'string') {
-            const ref = doc(db, "turmas", id);
+            const ref = doc(db, "turmas", "turma" + id);
             return ref;
         }
         else {
@@ -66,57 +70,17 @@ export default function id() {
         setInputs(campos)
     }
 
-    const campos = collection(db, "campos_form");
-    const getCampos = async () => {
-        try {
-            console.log("Entrou na função getCampos");
-            const q = query(campos);
-            const querySnapshot = await getDocs(q);
-            let arrayHelperCampos: React.SetStateAction<any[]> = [];
-            querySnapshot.forEach((doc) => {
-
-                arrayHelperCampos.push({
-                    title: doc.data().title, idDoc: doc.id,
-                    value: doc.data().value, isQtd: doc.data().isQtd
-                });
-                console.log("doc " + doc.data().title);
-                console.log("docRef: " + doc.id);
-
-
-            });
-            setInputs(arrayHelperCampos);
-
-            setAchouCampos(arrayHelperCampos.length > 0);
-            console.log("Campos " + arrayHelperCampos);
-        } catch (e) {
-            console.log(e);
-        } finally {
-            if (inputs.length == 0 || inputs.length == 0) {
-                setAchouCampos(false);
-            } else {
-                setAchouCampos(true);
-            }
-
-        }
-
-    }
-
-
     useEffect(() => {
-        getCampos();
+        getCampos(inputs, setInputs, setAchouCampos, setEstaCarregando);
     }, [cardsCriados]);
-
-
-    const refresh = () => {
-        if (inputs.length == 0)
-            getCampos();
-        else
-            setAchouCampos(true);
-
-    }
 
     const sendData = async () => {
         console.log("Entrou na função send data");
+        const dataAtual = new Date();
+        const dia = dataAtual.getDate();
+        const mes = dataAtual.getMonth() + 1;
+        const ano = dataAtual.getFullYear();
+        const dataFormat = `${dia}/${mes}/${ano}`;
         const data: { [key: string]: any } = {};
         inputs.forEach((input, index) => {
             if (input.value !== undefined && input.value !== null) {
@@ -125,7 +89,7 @@ export default function id() {
             }
         });
         data["turma_referente"] = geraRef(id);
-        data["dia_letivo"] = Timestamp.now();
+        data["dia_letivo"] = dataFormat;
 
         await addDoc(collection(db, "dados_obtained"), data);
         console.log("Criou novo doc");
@@ -174,7 +138,7 @@ export default function id() {
                 console.error("Erro ao enviar:", error);
             });
         setCardsCriados((number) => number + 1)
-        setVisibleModal(false)
+        setvisibleModalAddCard(false)
     };
 
     const deleteCard = (idDoc: string) => {
@@ -202,29 +166,20 @@ export default function id() {
                             </TouchableOpacity>
                         </View>
                         <View>
-                            <Pressable
-                                style={({ pressed }) => [{ backgroundColor: pressed ? '#F7900B' : '#152E45' },
-                                { alignSelf: 'center', padding: 20, borderRadius: 8, marginTop: 10 }]} onPress={() => {
-                                    sendData()
-                                }}>
-                                <Text style={{ color: 'white', }}>Enviar</Text>
-                            </Pressable>
-                        </View>
-                        <View>
-                            <TouchableOpacity onPress={() => setVisibleModal(true)}>
+                            <TouchableOpacity onPress={() => setvisibleModalAddCard(true)}>
                                 <Ionicons name="add-circle-outline" size={35} color="#152E45" />
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View>
                         <Portal>
-                            <Modal visible={visibleModal}
+                            <Modal visible={visibleModalAddCard}
                                 contentContainerStyle={styles.containerModal}
                                 dismissable={false}
                             >
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{}}>
-                                        <TouchableOpacity onPress={() => setVisibleModal(false)}>
+                                        <TouchableOpacity onPress={() => setvisibleModalAddCard(false)}>
                                             <AntDesign name="arrowleft" size={35} color="white" />
                                         </TouchableOpacity>
                                     </View>
@@ -252,24 +207,33 @@ export default function id() {
                         </Portal>
                     </View>
                     <View style={{ height: '95%' }}>
+                        <View style={{alignSelf:'center'}}>
+                            <Text className="font-bold color-blue-accent">TURMA {local.id?.toString().toLocaleUpperCase()}</Text>
+                        </View>
                         <ScrollView>
-                            {achouCampos ? inputs.map((item, index) => {
-                                return (
-                                    <CardInfoForm title={item.title} value={item.value} isQtd={item.isQtd}
-                                        onValueChange={handlerDataEachInput} id={index} key={index}
-                                        idDoc={item.idDoc} onDelete={deleteCard}
-                                    />
-                                )
-                            })
+                            {estaCarregando ? <View className="justify-center items-center">
+                                <ActivityIndicator size="large" color="#F7900B" />
+                            </View>
                                 :
-                                <View>
-                                    <Text className="text-center p-6">Nenhum campo encontrado.</Text>
-                                    <Pressable className="flex-row justify-center items-center bg-blue-accent rounded-lg mt-4" onPress={refresh}>
-                                        <MaterialIcons name="refresh" size={48} color="white" />
-                                        <Text className="color-white">Recarregar</Text>
-                                    </Pressable>
-                                </View>
+                                inputs.map((item, index) => {
+                                    return (
+                                        <CardInfoForm title={item.title} value={item.value} isQtd={item.isQtd}
+                                            onValueChange={handlerDataEachInput} id={index} key={index}
+                                            idDoc={item.idDoc} onDelete={deleteCard}
+                                        />
+                                    )
+                                })
+
                             }
+                            <View>
+                                <Pressable
+                                    style={({ pressed }) => [{ backgroundColor: pressed ? '#F7900B' : '#152E45' },
+                                    { alignSelf: 'center', paddingVertical: 20, paddingHorizontal: 60, borderRadius: 8, }]} onPress={() => {
+                                        sendData()
+                                    }}>
+                                    <Text style={{ color: 'white', }}>Enviar</Text>
+                                </Pressable>
+                            </View>
                         </ScrollView>
                     </View>
                 </SafeAreaView>

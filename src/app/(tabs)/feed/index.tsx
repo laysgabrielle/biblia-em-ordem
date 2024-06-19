@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { View, Dimensions, Modal, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState, useEffect, useContext } from 'react'
+import { UserContext } from '../../../context/UserContext';
+import { View, Dimensions, Modal, TouchableOpacity, ScrollView, Text } from "react-native";
 import CardEvento from "../../../components/card-evento";
 import ModalEventos from "../../../components/modal-eventos";
 import { MaterialIcons } from "@expo/vector-icons";
 import { db } from "../../../../firebase/firebaseConfig.js";
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { AntDesign } from '@expo/vector-icons';
 
 interface Evento {
   id: string;
@@ -17,7 +19,8 @@ interface Evento {
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const [cards, setCards] = useState<Evento[]>([]);
-
+  const {usuarioLogado} = useContext(UserContext);
+  console.log(usuarioLogado);
   const fetchEventos = async () => {
     const querySnapshot = await getDocs(collection(db, "eventos"));
     const fetchedEventos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Evento[];
@@ -69,9 +72,11 @@ export default function Home() {
         alignItems: "center",
       }}
     >
+      {usuarioLogado ? 
       <TouchableOpacity onPress={() => setModalVisible(true)}>
-        {/* <AntDesign name="pluscircleo" size={28} color= "#152E45" style={{ marginLeft: 355, margin: 5,paddingTop:15 }} />    */}
-      </TouchableOpacity>
+        <AntDesign name="pluscircleo" size={28} color= "#152E45" style={{ marginLeft: 355, margin: 5,paddingTop:15 }} />   
+      </TouchableOpacity> : null }
+      
       <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
         {cards.map((card) => (
           <View key={card.id} style={{ marginBottom: 20 }}>

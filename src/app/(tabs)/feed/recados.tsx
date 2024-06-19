@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { View, Modal, ScrollView, TouchableOpacity } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import React , { useState, useEffect, useContext} from "react";
+import { View, Modal,ScrollView, TouchableOpacity } from "react-native";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import CardEvento from "../../../components/card-evento";
 import CardRecado from "../../../components/card-recado";
 import ModalRecados from "../../../components/modal-recados";
 import ModalLicao from "../../../components/moda-licao";
-import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { db } from "../../../../firebase/firebaseConfig.js";
+import { collection, addDoc, getDocs, deleteDoc, doc  } from 'firebase/firestore';
+import {db} from "../../../../firebase/firebaseConfig";
+import { UserContext } from "../../../context/UserContext";
+
 
 interface Recado {
   id: string;
@@ -19,6 +21,8 @@ interface Recado {
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const [cards, setCards] = useState<Recado[]>([]);
+  const {usuarioLogado} = useContext(UserContext);
+  console.log(usuarioLogado);
 
   const fetchRecados = async () => {
     const querySnapshot = await getDocs(collection(db, "recados"));
@@ -34,16 +38,17 @@ export default function Home() {
     setModalVisible(false);
   };
 
-const addCard = async (title: string, location: string, info: string) => {
+const addCard = async (title: string, location: string, info: string, image: string | null) => {
   if (title && location && info) {
     try {
       const docRef = await addDoc(collection(db, "recados"), {
         title,
         location,
-        info
+        info,
+        image,
       });
       console.log("Document written with ID: ", docRef.id);
-      setCards([...cards, { id: docRef.id, title, location, info }]);
+      setCards([...cards, { id: docRef.id, title, location, info, image }]);
       closeModal();
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -72,7 +77,7 @@ const addCard = async (title: string, location: string, info: string) => {
       }}
     >
       <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <MaterialIcons name = "add" size={28} style={{marginLeft: 355, margin:5}}></MaterialIcons>
+        <AntDesign name="pluscircleo" size={28} color= "#152E45" style={{ marginLeft: 355, margin: 5,paddingTop:15 }} />   
       </TouchableOpacity>
       <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>  
       {cards.map((card, recados) => (
@@ -83,6 +88,7 @@ const addCard = async (title: string, location: string, info: string) => {
           location={card.location}
           info={card.info}
           deleteCard={deleteCard}
+          image={card.image}
         />
       ))} 
       </ScrollView>
