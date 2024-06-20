@@ -34,7 +34,7 @@ export default function Login() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <Image source={require('../../assets/images/blidem.png')}style={styles.image}/>
+                <Image source={require('../../assets/images/Login.png')}style={styles.image}/>
                 {usuarioLogado ? <Text>Usuário logado</Text> : <Text>Usuário não logado</Text>}
                 <TextInput
                     style={styles.input}
