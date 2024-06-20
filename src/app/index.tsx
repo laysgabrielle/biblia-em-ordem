@@ -30,7 +30,7 @@ export default function Home() {
 
       <Image
         source={require('../../assets/images/blindem.png')}
-        style={styles.image}
+        style={styles.image2}
       />
 
       <View style={styles.textContainer}>
@@ -42,18 +42,20 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#152E45',
-    justifyContent: 'center', 
     alignItems: 'center', 
   },
   image: {
     width: width,
   },
+  image2: {
+   marginTop:1,
+   width: width,
+   
+  },
   cardContainer: {
-    marginTop: 5, 
+    marginTop: 25, 
     marginBottom: 5, 
-
   },
   textContainer: {
     position: 'absolute',
