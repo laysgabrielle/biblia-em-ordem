@@ -4,9 +4,9 @@ import { View, Dimensions, Modal, TouchableOpacity, ScrollView, Text } from "rea
 import CardEvento from "../../../components/card-evento";
 import ModalEventos from "../../../components/modal-eventos";
 import { MaterialIcons } from "@expo/vector-icons";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import {db} from "../../../../firebase/firebaseConfig";
+import { db } from "../../../../firebase/firebaseConfig.js";
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { AntDesign } from '@expo/vector-icons';
 
 interface Evento {
   id: string;
@@ -20,6 +20,7 @@ export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const [cards, setCards] = useState<Evento[]>([]);
   const {usuarioLogado} = useContext(UserContext);
+  console.log(usuarioLogado);
   const fetchEventos = async () => {
     const querySnapshot = await getDocs(collection(db, "eventos"));
     const fetchedEventos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Evento[];
@@ -66,7 +67,7 @@ export default function Home() {
     <View
       style={{
         flex: 1,
-        backgroundColor: "#c6c6c6",
+        backgroundColor: "#B9C1C7",
         justifyContent: "center",
         alignItems: "center",
       }}

@@ -242,7 +242,7 @@ export default function id() {
             </View>
             <View className="justify-center items-center ">
                 <View className="flex-row justify-between items-baseline">
-                    <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id.toString().toLocaleUpperCase()}</Text>
+                    <Text className="mt-10 font-bold color-blue-accent">TURMA {local.id?.toString().toLocaleUpperCase()}</Text>
                 </View>
                 <ScrollView>
                     {

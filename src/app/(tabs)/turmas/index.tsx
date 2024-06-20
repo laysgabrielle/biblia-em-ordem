@@ -25,7 +25,6 @@ export default function Turmas(){
     const [achouTurmas, setAchouTurmas] = useState(true);
 
     const [estaCarregando, setEstaCarregando] = useState(false);
-
     
     useEffect(() => {
         getTurmas(nomesTurmas, setNomesTurmas, setAchouTurmas, setEstaCarregando );
